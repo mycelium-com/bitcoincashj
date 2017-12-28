@@ -16,6 +16,8 @@
 
 package org.bitcoinj.wallet;
 
+import com.google.common.collect.ImmutableList;
+import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.KeyCrypter;
 
@@ -59,4 +61,31 @@ public interface KeyChainFactory {
      * @param isMarried whether the keychain is leading in a marriage
      */
     DeterministicKeyChain makeWatchingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isFollowingKey, boolean isMarried) throws UnreadableWalletException;
+
+    /**
+     * Make a spending keychain.
+     *
+     * <p>isMarried and isFollowingKey must not be true at the same time.
+     *
+     * @param key the protobuf for the account key
+     * @param firstSubKey the protobuf for the first child key (normally the parent of the external subchain)
+     * @param accountKey the account extended public key
+     * @param isMarried whether the keychain is leading in a marriage
+     */
+    DeterministicKeyChain makeSpendingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey,
+                                               boolean isMarried) throws UnreadableWalletException;
+
+    /**
+     * Make a spending keychain.
+     *
+     * <p>isMarried and isFollowingKey must not be true at the same time.
+     *
+     * @param key the protobuf for the account key
+     * @param firstSubKey the protobuf for the first child key (normally the parent of the external subchain)
+     * @param accountKey the account extended public key
+     * @param isMarried whether the keychain is leading in a marriage
+     */
+    DeterministicKeyChain makeSpendingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey,
+                                               boolean isMarried, ImmutableList<ChildNumber> accountPath)
+            throws UnreadableWalletException;
 }

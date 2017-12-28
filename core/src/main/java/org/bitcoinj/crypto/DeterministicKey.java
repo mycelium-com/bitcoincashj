@@ -113,6 +113,17 @@ public class DeterministicKey extends ECKey {
                             KeyCrypter crypter,
                             LazyECPoint pub,
                             EncryptedData priv,
+                            @Nullable DeterministicKey parent, long creationTimeSeconds) {
+        this(childNumberPath, chainCode, crypter, pub, priv, parent);
+        this.creationTimeSeconds = creationTimeSeconds;
+    }
+
+    /** Constructs a key from its components. This is not normally something you should use. */
+    public DeterministicKey(ImmutableList<ChildNumber> childNumberPath,
+                            byte[] chainCode,
+                            KeyCrypter crypter,
+                            LazyECPoint pub,
+                            EncryptedData priv,
                             @Nullable DeterministicKey parent) {
         this(childNumberPath, chainCode, pub, null, parent);
         this.encryptedPrivateKey = checkNotNull(priv);

@@ -145,6 +145,16 @@ public class DeterministicKeyChainTest {
             public DeterministicKeyChain makeWatchingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isFollowingKey, boolean isMarried) {
                 throw new UnsupportedOperationException();
             }
+
+            @Override
+            public DeterministicKeyChain makeSpendingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isMarried) throws UnreadableWalletException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public DeterministicKeyChain makeSpendingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isMarried, ImmutableList<ChildNumber> accountPath) throws UnreadableWalletException {
+                throw new UnsupportedOperationException();
+            }
         };
 
         chain1 = DeterministicKeyChain.fromProtobuf(keys, null, factory).get(0);

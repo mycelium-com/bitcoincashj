@@ -135,7 +135,7 @@ public final class HDKeyDerivation {
                     rawKey.chainCode,
                     new LazyECPoint(ECKey.CURVE.getCurve(), rawKey.keyBytes),
                     null,
-                    parent);
+                    parent, System.currentTimeMillis() / 1000);
         } else {
             RawKeyBytes rawKey = deriveChildKeyBytesFromPrivate(parent, childNumber);
             return new DeterministicKey(
@@ -160,7 +160,7 @@ public final class HDKeyDerivation {
                     rawKey.chainCode,
                     new LazyECPoint(ECKey.CURVE.getCurve(), rawKey.keyBytes),
                     null,
-                    parent, creationTimeSeconds);
+                    parent);
         } else {
             RawKeyBytes rawKey = deriveChildKeyBytesFromPrivate(parent, childNumber);
             return new DeterministicKey(

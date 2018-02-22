@@ -45,7 +45,6 @@ public abstract class AbstractBitcoinNetParams extends NetworkParameters {
     int uahfHeight = 478559;
     /** Activation time at which the cash HF kicks in. */
     protected long cashHardForkActivationTime;
-    protected int daaHeight;
 
     public AbstractBitcoinNetParams() {
         super();
@@ -65,7 +64,7 @@ public abstract class AbstractBitcoinNetParams extends NetworkParameters {
     	final BlockStore blockStore, AbstractBlockChain blockChain) throws VerificationException, BlockStoreException {
         Block prev = storedPrev.getHeader();
 
-        if (storedPrev.getHeight() +1 >= daaHeight) {
+        if (blockChain.getMedianTimestampOfRecentBlocks(storedPrev, blockStore) >= cashHardForkActivationTime) {
             checkNextCashWorkRequired(storedPrev, nextBlock, blockStore);
             return;
         }
@@ -301,7 +300,7 @@ public abstract class AbstractBitcoinNetParams extends NetworkParameters {
      * block. Because timestamps are the least trustworthy information we have as
      * input, this ensures the algorithm is more resistant to malicious inputs.
      */
-    protected void checkNextCashWorkRequired(StoredBlock pindexPrev,
+    void checkNextCashWorkRequired(StoredBlock pindexPrev,
                                    Block pblock, BlockStore blockStore) {
         // This cannot handle the genesis block and early blocks in general.
         //assert(pindexPrev);

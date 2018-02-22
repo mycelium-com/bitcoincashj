@@ -135,7 +135,7 @@ public final class HDKeyDerivation {
                     rawKey.chainCode,
                     new LazyECPoint(ECKey.CURVE.getCurve(), rawKey.keyBytes),
                     null,
-                    parent, System.currentTimeMillis() / 1000);
+                    parent);
         } else {
             RawKeyBytes rawKey = deriveChildKeyBytesFromPrivate(parent, childNumber);
             return new DeterministicKey(
@@ -145,32 +145,6 @@ public final class HDKeyDerivation {
                     parent);
         }
     }
-
-    /**
-     * @throws HDDerivationException if private derivation is attempted for a public-only parent key, or
-     * if the resulting derived key is invalid (eg. private key == 0).
-     */
-    public static DeterministicKey deriveChildKey(DeterministicKey parent, ChildNumber childNumber,
-                                                  long creationTimeSeconds)
-            throws HDDerivationException {
-        if (!parent.hasPrivKey()) {
-            RawKeyBytes rawKey = deriveChildKeyBytesFromPublic(parent, childNumber, PublicDeriveMode.NORMAL);
-            return new DeterministicKey(
-                    HDUtils.append(parent.getPath(), childNumber),
-                    rawKey.chainCode,
-                    new LazyECPoint(ECKey.CURVE.getCurve(), rawKey.keyBytes),
-                    null,
-                    parent);
-        } else {
-            RawKeyBytes rawKey = deriveChildKeyBytesFromPrivate(parent, childNumber);
-            return new DeterministicKey(
-                    HDUtils.append(parent.getPath(), childNumber),
-                    rawKey.chainCode,
-                    new BigInteger(1, rawKey.keyBytes),
-                    parent, creationTimeSeconds);
-        }
-    }
-
 
     public static RawKeyBytes deriveChildKeyBytesFromPrivate(DeterministicKey parent,
                                                               ChildNumber childNumber) throws HDDerivationException {

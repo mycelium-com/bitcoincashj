@@ -100,27 +100,6 @@ public class DeterministicKey extends ECKey {
     /** Constructs a key from its components. This is not normally something you should use. */
     public DeterministicKey(ImmutableList<ChildNumber> childNumberPath,
                             byte[] chainCode,
-                            LazyECPoint publicAsPoint,
-                            @Nullable BigInteger priv,
-                            @Nullable DeterministicKey parent, long creationTimeSeconds) {
-        this(childNumberPath, chainCode, publicAsPoint, priv, parent);
-        this.creationTimeSeconds = creationTimeSeconds;
-    }
-
-    /** Constructs a key from its components. This is not normally something you should use. */
-    public DeterministicKey(ImmutableList<ChildNumber> childNumberPath,
-                            byte[] chainCode,
-                            KeyCrypter crypter,
-                            LazyECPoint pub,
-                            EncryptedData priv,
-                            @Nullable DeterministicKey parent, long creationTimeSeconds) {
-        this(childNumberPath, chainCode, crypter, pub, priv, parent);
-        this.creationTimeSeconds = creationTimeSeconds;
-    }
-
-    /** Constructs a key from its components. This is not normally something you should use. */
-    public DeterministicKey(ImmutableList<ChildNumber> childNumberPath,
-                            byte[] chainCode,
                             KeyCrypter crypter,
                             LazyECPoint pub,
                             EncryptedData priv,
@@ -128,15 +107,6 @@ public class DeterministicKey extends ECKey {
         this(childNumberPath, chainCode, pub, null, parent);
         this.encryptedPrivateKey = checkNotNull(priv);
         this.keyCrypter = checkNotNull(crypter);
-    }
-
-    /** Constructs a key from its components. This is not normally something you should use. */
-    public DeterministicKey(ImmutableList<ChildNumber> childNumberPath,
-                            byte[] chainCode,
-                            BigInteger priv,
-                            @Nullable DeterministicKey parent, long creationTimeSeconds) {
-        this(childNumberPath, chainCode, priv, parent);
-        this.creationTimeSeconds = creationTimeSeconds;
     }
 
     /**

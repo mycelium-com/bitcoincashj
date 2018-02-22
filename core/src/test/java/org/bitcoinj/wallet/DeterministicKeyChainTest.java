@@ -80,7 +80,7 @@ public class DeterministicKeyChainTest {
         chain.getKey(KeyChain.KeyPurpose.RECEIVE_FUNDS);
         chain.getKey(KeyChain.KeyPurpose.CHANGE);
         chain.maybeLookAhead();
-        assertEquals(2, chain.getKeys(false).size());
+        assertEquals(2, chain.getKeys(false,false).size());
     }
 
     @Test
@@ -132,12 +132,27 @@ public class DeterministicKeyChainTest {
         List<Protos.Key> keys = chain1.serializeToProtobuf();
         KeyChainFactory factory = new KeyChainFactory() {
             @Override
+            public DeterministicKeyChain makeKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicSeed seed, KeyCrypter crypter, boolean isMarried, String originalAccountPath) {
+                return new AccountOneChain(crypter, seed);
+            }
+
+            @Override
             public DeterministicKeyChain makeKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicSeed seed, KeyCrypter crypter, boolean isMarried) {
                 return new AccountOneChain(crypter, seed);
             }
 
             @Override
             public DeterministicKeyChain makeWatchingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isFollowingKey, boolean isMarried) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public DeterministicKeyChain makeSpendingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isMarried) throws UnreadableWalletException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public DeterministicKeyChain makeSpendingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isMarried, ImmutableList<ChildNumber> accountPath) throws UnreadableWalletException {
                 throw new UnsupportedOperationException();
             }
         };

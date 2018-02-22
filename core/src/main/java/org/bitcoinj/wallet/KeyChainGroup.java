@@ -84,12 +84,44 @@ public class KeyChainGroup implements KeyBag {
         this(params, null, ImmutableList.of(new DeterministicKeyChain(seed)), null, null);
     }
 
+    public KeyChainGroup(NetworkParameters params, DeterministicSeed seed, ImmutableList<ChildNumber> accountPath) {
+        this(params, null, ImmutableList.of(new DeterministicKeyChain(seed, accountPath)), null, null);
+    }
+
     /**
      * Creates a keychain group with no basic chain, and an HD chain that is watching the given watching key.
      * This HAS to be an account key as returned by {@link DeterministicKeyChain#getWatchingKey()}.
      */
     public KeyChainGroup(NetworkParameters params, DeterministicKey watchKey) {
         this(params, null, ImmutableList.of(DeterministicKeyChain.watch(watchKey)), null, null);
+    }
+
+    /**
+     * Creates a keychain group with no basic chain, and an HD chain that is watching the given watching key.
+     * This HAS to be an account key as returned by {@link DeterministicKeyChain#getWatchingKey()}.
+     */
+    public KeyChainGroup(NetworkParameters params, DeterministicKey watchKey, ImmutableList<ChildNumber> accountPath) {
+        this(params, null, ImmutableList.of(DeterministicKeyChain.watch(watchKey, accountPath)), null, null);
+    }
+
+    /**
+     * Creates a keychain group with no basic chain, and an HD chain that is watching or spending the given key.
+     * This HAS to be an account key as returned by {@link DeterministicKeyChain#getWatchingKey()}.
+     */
+    public KeyChainGroup(NetworkParameters params, DeterministicKey watchKey, boolean watch) {
+        this(params, null, ImmutableList.of(watch ? DeterministicKeyChain.watch(watchKey) : DeterministicKeyChain.spend(watchKey)), null, null);
+    }
+
+    /**
+     * Creates a keychain group with no basic chain, and an HD chain that is watching or spending the given key.
+     * This HAS to be an account key as returned by {@link DeterministicKeyChain#getWatchingKey()}.
+     */
+    public KeyChainGroup(NetworkParameters params, DeterministicKey watchKey, boolean watch,
+                         ImmutableList<ChildNumber> accountPath) {
+        this(params, null,
+                ImmutableList.of(watch ? DeterministicKeyChain.watch(watchKey, accountPath)
+                        : DeterministicKeyChain.spend(watchKey, accountPath)),
+                null, null);
     }
 
     // Used for deserialization.
@@ -643,6 +675,8 @@ public class KeyChainGroup implements KeyBag {
         return fromProtobufUnencrypted(params, keys, new DefaultKeyChainFactory());
     }
 
+
+
     public static KeyChainGroup fromProtobufUnencrypted(NetworkParameters params, List<Protos.Key> keys, KeyChainFactory factory) throws UnreadableWalletException {
         BasicKeyChain basicKeyChain = BasicKeyChain.fromProtobufUnencrypted(keys);
         List<DeterministicKeyChain> chains = DeterministicKeyChain.fromProtobuf(keys, null, factory);
@@ -666,6 +700,20 @@ public class KeyChainGroup implements KeyBag {
             currentKeys = createCurrentKeysMap(chains);
         extractFollowingKeychains(chains);
         return new KeyChainGroup(params, basicKeyChain, chains, currentKeys, crypter);
+    }
+
+    /**
+     * Creates a keychain group with no basic chain, and an HD chain that is watching the given watching key.
+     * This HAS to be an account key as returned by {@link DeterministicKeyChain#getWatchingKey()}.
+     */
+    static KeyChainGroup createSpendingOrWatchingKeyChainGroup(NetworkParameters params, DeterministicKey key,
+                                                               boolean spend) {
+        if (spend) {
+            return new KeyChainGroup(params, null, ImmutableList.of(DeterministicKeyChain.spend(key)),
+                    null, null);
+        } else {
+            return new KeyChainGroup(params, key);
+        }
     }
 
     /**

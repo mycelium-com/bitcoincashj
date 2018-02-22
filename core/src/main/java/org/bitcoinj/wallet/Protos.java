@@ -445,15 +445,15 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasIpAddress()) {
-          
+
           return false;
         }
         if (!hasPort()) {
-          
+
           return false;
         }
         if (!hasServices()) {
-          
+
           return false;
         }
         return true;
@@ -1007,11 +1007,11 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasInitialisationVector()) {
-          
+
           return false;
         }
         if (!hasEncryptedPrivateKey()) {
-          
+
           return false;
         }
         return true;
@@ -1899,7 +1899,7 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasChainCode()) {
-          
+
           return false;
         }
         return true;
@@ -2476,6 +2476,32 @@ public final class Protos {
      * </pre>
      */
     org.bitcoinj.wallet.Protos.EncryptedDataOrBuilder getEncryptedDeterministicSeedOrBuilder();
+
+
+    /**
+     * <code>optional string account_path = 10;</code>
+     *
+     * <pre>
+     * The original account path
+     * </pre>
+     */
+    boolean hasAccountPath();
+    /**
+     * <code>optional string account_path = 10;</code>
+     *
+     * <pre>
+     * The original account path
+     * </pre>
+     */
+    java.lang.String getAccountPath();
+    /**
+     * <code>optional string account_path = 10;</code>
+     *
+     * <pre>
+     * The original account path
+     * </pre>
+     */
+    com.google.protobuf.ByteString getAccountPathBytes();
   }
   /**
    * Protobuf type {@code wallet.Key}
@@ -2614,6 +2640,12 @@ public final class Protos {
               bitField0_ |= 0x00000100;
               break;
             }
+            case 82: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000200;
+              accountPath_ = bs;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -2662,7 +2694,7 @@ public final class Protos {
        * <code>ORIGINAL = 1;</code>
        *
        * <pre>
-       ** Unencrypted - Original bitcoin secp256k1 curve 
+       ** Unencrypted - Original bitcoin secp256k1 curve
        * </pre>
        */
       ORIGINAL(0, 1),
@@ -2670,7 +2702,7 @@ public final class Protos {
        * <code>ENCRYPTED_SCRYPT_AES = 2;</code>
        *
        * <pre>
-       ** Encrypted with Scrypt and AES - Original bitcoin secp256k1 curve 
+       ** Encrypted with Scrypt and AES - Original bitcoin secp256k1 curve
        * </pre>
        */
       ENCRYPTED_SCRYPT_AES(1, 2),
@@ -2703,7 +2735,7 @@ public final class Protos {
        * <code>ORIGINAL = 1;</code>
        *
        * <pre>
-       ** Unencrypted - Original bitcoin secp256k1 curve 
+       ** Unencrypted - Original bitcoin secp256k1 curve
        * </pre>
        */
       public static final int ORIGINAL_VALUE = 1;
@@ -2711,7 +2743,7 @@ public final class Protos {
        * <code>ENCRYPTED_SCRYPT_AES = 2;</code>
        *
        * <pre>
-       ** Encrypted with Scrypt and AES - Original bitcoin secp256k1 curve 
+       ** Encrypted with Scrypt and AES - Original bitcoin secp256k1 curve
        * </pre>
        */
       public static final int ENCRYPTED_SCRYPT_AES_VALUE = 2;
@@ -2922,7 +2954,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -2942,7 +2974,7 @@ public final class Protos {
         getLabelBytes() {
       java.lang.Object ref = label_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         label_ = b;
@@ -3056,6 +3088,59 @@ public final class Protos {
       return encryptedDeterministicSeed_;
     }
 
+    public static final int ACCOUNT_PATH_FIELD_NUMBER = 10;
+    private java.lang.Object accountPath_;
+    /**
+     * <code>optional string account_path = 10;</code>
+     *
+     * <pre>
+     * The original account path
+     * </pre>
+     */
+    public boolean hasAccountPath() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    /**
+     * <code>optional string account_path = 10;</code>
+     *
+     * <pre>
+     * The original account path
+     * </pre>
+     */
+    public java.lang.String getAccountPath() {
+      java.lang.Object ref = accountPath_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          accountPath_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string account_path = 10;</code>
+     *
+     * <pre>
+     * The original account path
+     * </pre>
+     */
+    public com.google.protobuf.ByteString getAccountPathBytes() {
+      java.lang.Object ref = accountPath_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        accountPath_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       type_ = org.bitcoinj.wallet.Protos.Key.Type.ORIGINAL;
       secretBytes_ = com.google.protobuf.ByteString.EMPTY;
@@ -3066,6 +3151,7 @@ public final class Protos {
       deterministicKey_ = org.bitcoinj.wallet.Protos.DeterministicKey.getDefaultInstance();
       deterministicSeed_ = com.google.protobuf.ByteString.EMPTY;
       encryptedDeterministicSeed_ = org.bitcoinj.wallet.Protos.EncryptedData.getDefaultInstance();
+      accountPath_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3129,6 +3215,9 @@ public final class Protos {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeMessage(9, encryptedDeterministicSeed_);
       }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeBytes(10, getAccountPathBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3173,6 +3262,10 @@ public final class Protos {
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, encryptedDeterministicSeed_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBytesSize(10, getAccountPathBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3333,6 +3426,8 @@ public final class Protos {
           encryptedDeterministicSeedBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000100);
+        accountPath_ = "";
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
 
@@ -3409,6 +3504,10 @@ public final class Protos {
         } else {
           result.encryptedDeterministicSeed_ = encryptedDeterministicSeedBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.accountPath_ = accountPath_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3454,30 +3553,35 @@ public final class Protos {
         if (other.hasEncryptedDeterministicSeed()) {
           mergeEncryptedDeterministicSeed(other.getEncryptedDeterministicSeed());
         }
+        if (other.hasAccountPath()) {
+          bitField0_ |= 0x00000200;
+          accountPath_ = other.accountPath_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasType()) {
-          
+
           return false;
         }
         if (hasEncryptedData()) {
           if (!getEncryptedData().isInitialized()) {
-            
+
             return false;
           }
         }
         if (hasDeterministicKey()) {
           if (!getDeterministicKey().isInitialized()) {
-            
+
             return false;
           }
         }
         if (hasEncryptedDeterministicSeed()) {
           if (!getEncryptedDeterministicSeed().isInitialized()) {
-            
+
             return false;
           }
         }
@@ -3732,7 +3836,7 @@ public final class Protos {
        * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.bitcoinj.wallet.Protos.EncryptedData, org.bitcoinj.wallet.Protos.EncryptedData.Builder, org.bitcoinj.wallet.Protos.EncryptedDataOrBuilder> 
+          org.bitcoinj.wallet.Protos.EncryptedData, org.bitcoinj.wallet.Protos.EncryptedData.Builder, org.bitcoinj.wallet.Protos.EncryptedDataOrBuilder>
           getEncryptedDataFieldBuilder() {
         if (encryptedDataBuilder_ == null) {
           encryptedDataBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -3843,7 +3947,7 @@ public final class Protos {
           getLabelBytes() {
         java.lang.Object ref = label_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           label_ = b;
@@ -4055,7 +4159,7 @@ public final class Protos {
        * <code>optional .wallet.DeterministicKey deterministic_key = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.bitcoinj.wallet.Protos.DeterministicKey, org.bitcoinj.wallet.Protos.DeterministicKey.Builder, org.bitcoinj.wallet.Protos.DeterministicKeyOrBuilder> 
+          org.bitcoinj.wallet.Protos.DeterministicKey, org.bitcoinj.wallet.Protos.DeterministicKey.Builder, org.bitcoinj.wallet.Protos.DeterministicKeyOrBuilder>
           getDeterministicKeyFieldBuilder() {
         if (deterministicKeyBuilder_ == null) {
           deterministicKeyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -4262,7 +4366,7 @@ public final class Protos {
        * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.bitcoinj.wallet.Protos.EncryptedData, org.bitcoinj.wallet.Protos.EncryptedData.Builder, org.bitcoinj.wallet.Protos.EncryptedDataOrBuilder> 
+          org.bitcoinj.wallet.Protos.EncryptedData, org.bitcoinj.wallet.Protos.EncryptedData.Builder, org.bitcoinj.wallet.Protos.EncryptedDataOrBuilder>
           getEncryptedDeterministicSeedFieldBuilder() {
         if (encryptedDeterministicSeedBuilder_ == null) {
           encryptedDeterministicSeedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -4274,6 +4378,107 @@ public final class Protos {
         }
         return encryptedDeterministicSeedBuilder_;
       }
+
+      private java.lang.Object accountPath_ = "";
+      /**
+       * <code>optional string account_path = 10;</code>
+       *
+       * <pre>
+       * The original account path
+       * </pre>
+       */
+      public boolean hasAccountPath() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional string account_path = 10;</code>
+       *
+       * <pre>
+       * The original account path
+       * </pre>
+       */
+      public java.lang.String getAccountPath() {
+        java.lang.Object ref = accountPath_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            accountPath_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string account_path = 10;</code>
+       *
+       * <pre>
+       * The original account path
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+      getAccountPathBytes() {
+        java.lang.Object ref = accountPath_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          accountPath_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string account_path = 10;</code>
+       *
+       * <pre>
+       * The original account path
+       * </pre>
+       */
+      public Builder setAccountPath(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000200;
+        accountPath_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string account_path = 10;</code>
+       *
+       * <pre>
+       * The original account path
+       * </pre>
+       */
+      public Builder clearAccountPath() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        accountPath_ = getDefaultInstance().getAccountPath();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string account_path = 10;</code>
+       *
+       * <pre>
+       * The original account path
+       * </pre>
+       */
+      public Builder setAccountPathBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000200;
+        accountPath_ = value;
+        onChanged();
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:wallet.Key)
     }
@@ -4693,11 +4898,11 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasProgram()) {
-          
+
           return false;
         }
         if (!hasCreationTimestamp()) {
-          
+
           return false;
         }
         return true;
@@ -5429,15 +5634,15 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasTransactionOutPointHash()) {
-          
+
           return false;
         }
         if (!hasTransactionOutPointIndex()) {
-          
+
           return false;
         }
         if (!hasScriptBytes()) {
-          
+
           return false;
         }
         return true;
@@ -6246,11 +6451,11 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasValue()) {
-          
+
           return false;
         }
         if (!hasScriptBytes()) {
-          
+
           return false;
         }
         return true;
@@ -6549,7 +6754,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.PeerAddress broadcast_by = 6;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.PeerAddress> 
+    java.util.List<org.bitcoinj.wallet.Protos.PeerAddress>
         getBroadcastByList();
     /**
      * <code>repeated .wallet.PeerAddress broadcast_by = 6;</code>
@@ -6562,7 +6767,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.PeerAddress broadcast_by = 6;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.PeerAddressOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.PeerAddressOrBuilder>
         getBroadcastByOrBuilderList();
     /**
      * <code>repeated .wallet.PeerAddress broadcast_by = 6;</code>
@@ -7142,7 +7347,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.PeerAddress broadcast_by = 6;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.PeerAddressOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.PeerAddressOrBuilder>
         getBroadcastByOrBuilderList() {
       return broadcastBy_;
     }
@@ -7540,7 +7745,7 @@ public final class Protos {
               broadcastByBuilder_ = null;
               broadcastBy_ = other.broadcastBy_;
               bitField0_ = (bitField0_ & ~0x00000010);
-              broadcastByBuilder_ = 
+              broadcastByBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getBroadcastByFieldBuilder() : null;
             } else {
@@ -7561,7 +7766,7 @@ public final class Protos {
       public final boolean isInitialized() {
         for (int i = 0; i < getBroadcastByCount(); i++) {
           if (!getBroadcastBy(i).isInitialized()) {
-            
+
             return false;
           }
         }
@@ -7992,7 +8197,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.PeerAddress broadcast_by = 6;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.PeerAddressOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.PeerAddressOrBuilder>
            getBroadcastByOrBuilderList() {
         if (broadcastByBuilder_ != null) {
           return broadcastByBuilder_.getMessageOrBuilderList();
@@ -8018,12 +8223,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.PeerAddress broadcast_by = 6;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.PeerAddress.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.PeerAddress.Builder>
            getBroadcastByBuilderList() {
         return getBroadcastByFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.PeerAddress, org.bitcoinj.wallet.Protos.PeerAddress.Builder, org.bitcoinj.wallet.Protos.PeerAddressOrBuilder> 
+          org.bitcoinj.wallet.Protos.PeerAddress, org.bitcoinj.wallet.Protos.PeerAddress.Builder, org.bitcoinj.wallet.Protos.PeerAddressOrBuilder>
           getBroadcastByFieldBuilder() {
         if (broadcastByBuilder_ == null) {
           broadcastByBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -8221,7 +8426,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.TransactionInput transaction_input = 6;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.TransactionInput> 
+    java.util.List<org.bitcoinj.wallet.Protos.TransactionInput>
         getTransactionInputList();
     /**
      * <code>repeated .wallet.TransactionInput transaction_input = 6;</code>
@@ -8234,7 +8439,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.TransactionInput transaction_input = 6;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionInputOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionInputOrBuilder>
         getTransactionInputOrBuilderList();
     /**
      * <code>repeated .wallet.TransactionInput transaction_input = 6;</code>
@@ -8245,7 +8450,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.TransactionOutput transaction_output = 7;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.TransactionOutput> 
+    java.util.List<org.bitcoinj.wallet.Protos.TransactionOutput>
         getTransactionOutputList();
     /**
      * <code>repeated .wallet.TransactionOutput transaction_output = 7;</code>
@@ -8258,7 +8463,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.TransactionOutput transaction_output = 7;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder>
         getTransactionOutputOrBuilderList();
     /**
      * <code>repeated .wallet.TransactionOutput transaction_output = 7;</code>
@@ -8623,13 +8828,13 @@ public final class Protos {
      * <pre>
      **
      * This is a bitfield oriented enum, with the following bits:
-     * 
+     *
      * bit 0 - spent
      * bit 1 - appears in alt chain
      * bit 2 - appears in best chain
      * bit 3 - double-spent
      * bit 4 - pending (we would like the tx to go into the best chain)
-     * 
+     *
      * Not all combinations are interesting, just the ones actually used in the enum.
      * </pre>
      */
@@ -9092,7 +9297,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.TransactionInput transaction_input = 6;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionInputOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionInputOrBuilder>
         getTransactionInputOrBuilderList() {
       return transactionInput_;
     }
@@ -9127,7 +9332,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.TransactionOutput transaction_output = 7;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder>
         getTransactionOutputOrBuilderList() {
       return transactionOutput_;
     }
@@ -9317,7 +9522,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -9338,7 +9543,7 @@ public final class Protos {
         getMemoBytes() {
       java.lang.Object ref = memo_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         memo_ = b;
@@ -9830,7 +10035,7 @@ public final class Protos {
               transactionInputBuilder_ = null;
               transactionInput_ = other.transactionInput_;
               bitField0_ = (bitField0_ & ~0x00000020);
-              transactionInputBuilder_ = 
+              transactionInputBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getTransactionInputFieldBuilder() : null;
             } else {
@@ -9856,7 +10061,7 @@ public final class Protos {
               transactionOutputBuilder_ = null;
               transactionOutput_ = other.transactionOutput_;
               bitField0_ = (bitField0_ & ~0x00000040);
-              transactionOutputBuilder_ = 
+              transactionOutputBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getTransactionOutputFieldBuilder() : null;
             } else {
@@ -9904,34 +10109,34 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasVersion()) {
-          
+
           return false;
         }
         if (!hasHash()) {
-          
+
           return false;
         }
         for (int i = 0; i < getTransactionInputCount(); i++) {
           if (!getTransactionInput(i).isInitialized()) {
-            
+
             return false;
           }
         }
         for (int i = 0; i < getTransactionOutputCount(); i++) {
           if (!getTransactionOutput(i).isInitialized()) {
-            
+
             return false;
           }
         }
         if (hasConfidence()) {
           if (!getConfidence().isInitialized()) {
-            
+
             return false;
           }
         }
         if (hasExchangeRate()) {
           if (!getExchangeRate().isInitialized()) {
-            
+
             return false;
           }
         }
@@ -10394,7 +10599,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.TransactionInput transaction_input = 6;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionInputOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionInputOrBuilder>
            getTransactionInputOrBuilderList() {
         if (transactionInputBuilder_ != null) {
           return transactionInputBuilder_.getMessageOrBuilderList();
@@ -10420,12 +10625,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.TransactionInput transaction_input = 6;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.TransactionInput.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.TransactionInput.Builder>
            getTransactionInputBuilderList() {
         return getTransactionInputFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.TransactionInput, org.bitcoinj.wallet.Protos.TransactionInput.Builder, org.bitcoinj.wallet.Protos.TransactionInputOrBuilder> 
+          org.bitcoinj.wallet.Protos.TransactionInput, org.bitcoinj.wallet.Protos.TransactionInput.Builder, org.bitcoinj.wallet.Protos.TransactionInputOrBuilder>
           getTransactionInputFieldBuilder() {
         if (transactionInputBuilder_ == null) {
           transactionInputBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -10634,7 +10839,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.TransactionOutput transaction_output = 7;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder>
            getTransactionOutputOrBuilderList() {
         if (transactionOutputBuilder_ != null) {
           return transactionOutputBuilder_.getMessageOrBuilderList();
@@ -10660,12 +10865,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.TransactionOutput transaction_output = 7;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.TransactionOutput.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.TransactionOutput.Builder>
            getTransactionOutputBuilderList() {
         return getTransactionOutputFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.TransactionOutput, org.bitcoinj.wallet.Protos.TransactionOutput.Builder, org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder> 
+          org.bitcoinj.wallet.Protos.TransactionOutput, org.bitcoinj.wallet.Protos.TransactionOutput.Builder, org.bitcoinj.wallet.Protos.TransactionOutputOrBuilder>
           getTransactionOutputFieldBuilder() {
         if (transactionOutputBuilder_ == null) {
           transactionOutputBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -10991,7 +11196,7 @@ public final class Protos {
        * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.bitcoinj.wallet.Protos.TransactionConfidence, org.bitcoinj.wallet.Protos.TransactionConfidence.Builder, org.bitcoinj.wallet.Protos.TransactionConfidenceOrBuilder> 
+          org.bitcoinj.wallet.Protos.TransactionConfidence, org.bitcoinj.wallet.Protos.TransactionConfidence.Builder, org.bitcoinj.wallet.Protos.TransactionConfidenceOrBuilder>
           getConfidenceFieldBuilder() {
         if (confidenceBuilder_ == null) {
           confidenceBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -11178,7 +11383,7 @@ public final class Protos {
        * </pre>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.bitcoinj.wallet.Protos.ExchangeRate, org.bitcoinj.wallet.Protos.ExchangeRate.Builder, org.bitcoinj.wallet.Protos.ExchangeRateOrBuilder> 
+          org.bitcoinj.wallet.Protos.ExchangeRate, org.bitcoinj.wallet.Protos.ExchangeRate.Builder, org.bitcoinj.wallet.Protos.ExchangeRateOrBuilder>
           getExchangeRateFieldBuilder() {
         if (exchangeRateBuilder_ == null) {
           exchangeRateBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -11237,7 +11442,7 @@ public final class Protos {
           getMemoBytes() {
         java.lang.Object ref = memo_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           memo_ = b;
@@ -11863,7 +12068,7 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasSalt()) {
-          
+
           return false;
         }
         return true;
@@ -12158,7 +12363,7 @@ public final class Protos {
    * Protobuf type {@code wallet.Extension}
    *
    * <pre>
-   ** An extension to the wallet 
+   ** An extension to the wallet
    * </pre>
    */
   public static final class Extension extends
@@ -12290,7 +12495,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -12310,7 +12515,7 @@ public final class Protos {
         getIdBytes() {
       java.lang.Object ref = id_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         id_ = b;
@@ -12504,7 +12709,7 @@ public final class Protos {
      * Protobuf type {@code wallet.Extension}
      *
      * <pre>
-     ** An extension to the wallet 
+     ** An extension to the wallet
      * </pre>
      */
     public static final class Builder extends
@@ -12622,15 +12827,15 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasId()) {
-          
+
           return false;
         }
         if (!hasData()) {
-          
+
           return false;
         }
         if (!hasMandatory()) {
-          
+
           return false;
         }
         return true;
@@ -12698,7 +12903,7 @@ public final class Protos {
           getIdBytes() {
         java.lang.Object ref = id_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           id_ = b;
@@ -13010,7 +13215,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -13026,7 +13231,7 @@ public final class Protos {
         getTagBytes() {
       java.lang.Object ref = tag_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         tag_ = b;
@@ -13293,11 +13498,11 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasTag()) {
-          
+
           return false;
         }
         if (!hasData()) {
-          
+
           return false;
         }
         return true;
@@ -13353,7 +13558,7 @@ public final class Protos {
           getTagBytes() {
         java.lang.Object ref = tag_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           tag_ = b;
@@ -13623,7 +13828,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -13643,7 +13848,7 @@ public final class Protos {
         getClassNameBytes() {
       java.lang.Object ref = className_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         className_ = b;
@@ -13912,7 +14117,7 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasClassName()) {
-          
+
           return false;
         }
         return true;
@@ -13980,7 +14185,7 @@ public final class Protos {
           getClassNameBytes() {
         java.lang.Object ref = className_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           className_ = b;
@@ -14175,7 +14380,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Key key = 3;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.Key> 
+    java.util.List<org.bitcoinj.wallet.Protos.Key>
         getKeyList();
     /**
      * <code>repeated .wallet.Key key = 3;</code>
@@ -14188,7 +14393,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Key key = 3;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.KeyOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.KeyOrBuilder>
         getKeyOrBuilderList();
     /**
      * <code>repeated .wallet.Key key = 3;</code>
@@ -14199,7 +14404,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Transaction transaction = 4;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.Transaction> 
+    java.util.List<org.bitcoinj.wallet.Protos.Transaction>
         getTransactionList();
     /**
      * <code>repeated .wallet.Transaction transaction = 4;</code>
@@ -14212,7 +14417,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Transaction transaction = 4;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOrBuilder>
         getTransactionOrBuilderList();
     /**
      * <code>repeated .wallet.Transaction transaction = 4;</code>
@@ -14223,7 +14428,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Script watched_script = 15;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.Script> 
+    java.util.List<org.bitcoinj.wallet.Protos.Script>
         getWatchedScriptList();
     /**
      * <code>repeated .wallet.Script watched_script = 15;</code>
@@ -14236,7 +14441,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Script watched_script = 15;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.ScriptOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.ScriptOrBuilder>
         getWatchedScriptOrBuilderList();
     /**
      * <code>repeated .wallet.Script watched_script = 15;</code>
@@ -14290,7 +14495,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Extension extension = 10;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.Extension> 
+    java.util.List<org.bitcoinj.wallet.Protos.Extension>
         getExtensionList();
     /**
      * <code>repeated .wallet.Extension extension = 10;</code>
@@ -14303,7 +14508,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Extension extension = 10;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.ExtensionOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.ExtensionOrBuilder>
         getExtensionOrBuilderList();
     /**
      * <code>repeated .wallet.Extension extension = 10;</code>
@@ -14361,7 +14566,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Tag tags = 16;</code>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.Tag> 
+    java.util.List<org.bitcoinj.wallet.Protos.Tag>
         getTagsList();
     /**
      * <code>repeated .wallet.Tag tags = 16;</code>
@@ -14374,7 +14579,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Tag tags = 16;</code>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.TagOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.TagOrBuilder>
         getTagsOrBuilderList();
     /**
      * <code>repeated .wallet.Tag tags = 16;</code>
@@ -14389,7 +14594,7 @@ public final class Protos {
      * transaction signers added to the wallet
      * </pre>
      */
-    java.util.List<org.bitcoinj.wallet.Protos.TransactionSigner> 
+    java.util.List<org.bitcoinj.wallet.Protos.TransactionSigner>
         getTransactionSignersList();
     /**
      * <code>repeated .wallet.TransactionSigner transaction_signers = 17;</code>
@@ -14414,7 +14619,7 @@ public final class Protos {
      * transaction signers added to the wallet
      * </pre>
      */
-    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder> 
+    java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder>
         getTransactionSignersOrBuilderList();
     /**
      * <code>repeated .wallet.TransactionSigner transaction_signers = 17;</code>
@@ -14430,7 +14635,7 @@ public final class Protos {
    * Protobuf type {@code wallet.Wallet}
    *
    * <pre>
-   ** A bitcoin wallet 
+   ** A bitcoin wallet
    * </pre>
    */
   public static final class Wallet extends
@@ -14779,7 +14984,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -14799,7 +15004,7 @@ public final class Protos {
         getNetworkIdentifierBytes() {
       java.lang.Object ref = networkIdentifier_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         networkIdentifier_ = b;
@@ -14881,7 +15086,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Key key = 3;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.KeyOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.KeyOrBuilder>
         getKeyOrBuilderList() {
       return key_;
     }
@@ -14916,7 +15121,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Transaction transaction = 4;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOrBuilder>
         getTransactionOrBuilderList() {
       return transaction_;
     }
@@ -14951,7 +15156,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Script watched_script = 15;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.ScriptOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.ScriptOrBuilder>
         getWatchedScriptOrBuilderList() {
       return watchedScript_;
     }
@@ -15049,7 +15254,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Extension extension = 10;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.ExtensionOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.ExtensionOrBuilder>
         getExtensionOrBuilderList() {
       return extension_;
     }
@@ -15097,7 +15302,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -15117,7 +15322,7 @@ public final class Protos {
         getDescriptionBytes() {
       java.lang.Object ref = description_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         description_ = b;
@@ -15165,7 +15370,7 @@ public final class Protos {
     /**
      * <code>repeated .wallet.Tag tags = 16;</code>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.TagOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.TagOrBuilder>
         getTagsOrBuilderList() {
       return tags_;
     }
@@ -15208,7 +15413,7 @@ public final class Protos {
      * transaction signers added to the wallet
      * </pre>
      */
-    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder> 
+    public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder>
         getTransactionSignersOrBuilderList() {
       return transactionSigners_;
     }
@@ -15516,7 +15721,7 @@ public final class Protos {
      * Protobuf type {@code wallet.Wallet}
      *
      * <pre>
-     ** A bitcoin wallet 
+     ** A bitcoin wallet
      * </pre>
      */
     public static final class Builder extends
@@ -15790,7 +15995,7 @@ public final class Protos {
               keyBuilder_ = null;
               key_ = other.key_;
               bitField0_ = (bitField0_ & ~0x00000010);
-              keyBuilder_ = 
+              keyBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getKeyFieldBuilder() : null;
             } else {
@@ -15816,7 +16021,7 @@ public final class Protos {
               transactionBuilder_ = null;
               transaction_ = other.transaction_;
               bitField0_ = (bitField0_ & ~0x00000020);
-              transactionBuilder_ = 
+              transactionBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getTransactionFieldBuilder() : null;
             } else {
@@ -15842,7 +16047,7 @@ public final class Protos {
               watchedScriptBuilder_ = null;
               watchedScript_ = other.watchedScript_;
               bitField0_ = (bitField0_ & ~0x00000040);
-              watchedScriptBuilder_ = 
+              watchedScriptBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getWatchedScriptFieldBuilder() : null;
             } else {
@@ -15877,7 +16082,7 @@ public final class Protos {
               extensionBuilder_ = null;
               extension_ = other.extension_;
               bitField0_ = (bitField0_ & ~0x00000400);
-              extensionBuilder_ = 
+              extensionBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getExtensionFieldBuilder() : null;
             } else {
@@ -15911,7 +16116,7 @@ public final class Protos {
               tagsBuilder_ = null;
               tags_ = other.tags_;
               bitField0_ = (bitField0_ & ~0x00002000);
-              tagsBuilder_ = 
+              tagsBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getTagsFieldBuilder() : null;
             } else {
@@ -15937,7 +16142,7 @@ public final class Protos {
               transactionSignersBuilder_ = null;
               transactionSigners_ = other.transactionSigners_;
               bitField0_ = (bitField0_ & ~0x00004000);
-              transactionSignersBuilder_ = 
+              transactionSignersBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getTransactionSignersFieldBuilder() : null;
             } else {
@@ -15951,48 +16156,48 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasNetworkIdentifier()) {
-          
+
           return false;
         }
         for (int i = 0; i < getKeyCount(); i++) {
           if (!getKey(i).isInitialized()) {
-            
+
             return false;
           }
         }
         for (int i = 0; i < getTransactionCount(); i++) {
           if (!getTransaction(i).isInitialized()) {
-            
+
             return false;
           }
         }
         for (int i = 0; i < getWatchedScriptCount(); i++) {
           if (!getWatchedScript(i).isInitialized()) {
-            
+
             return false;
           }
         }
         if (hasEncryptionParameters()) {
           if (!getEncryptionParameters().isInitialized()) {
-            
+
             return false;
           }
         }
         for (int i = 0; i < getExtensionCount(); i++) {
           if (!getExtension(i).isInitialized()) {
-            
+
             return false;
           }
         }
         for (int i = 0; i < getTagsCount(); i++) {
           if (!getTags(i).isInitialized()) {
-            
+
             return false;
           }
         }
         for (int i = 0; i < getTransactionSignersCount(); i++) {
           if (!getTransactionSigners(i).isInitialized()) {
-            
+
             return false;
           }
         }
@@ -16061,7 +16266,7 @@ public final class Protos {
           getNetworkIdentifierBytes() {
         java.lang.Object ref = networkIdentifier_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           networkIdentifier_ = b;
@@ -16444,7 +16649,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Key key = 3;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.KeyOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.KeyOrBuilder>
            getKeyOrBuilderList() {
         if (keyBuilder_ != null) {
           return keyBuilder_.getMessageOrBuilderList();
@@ -16470,12 +16675,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Key key = 3;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.Key.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.Key.Builder>
            getKeyBuilderList() {
         return getKeyFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.Key, org.bitcoinj.wallet.Protos.Key.Builder, org.bitcoinj.wallet.Protos.KeyOrBuilder> 
+          org.bitcoinj.wallet.Protos.Key, org.bitcoinj.wallet.Protos.Key.Builder, org.bitcoinj.wallet.Protos.KeyOrBuilder>
           getKeyFieldBuilder() {
         if (keyBuilder_ == null) {
           keyBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -16684,7 +16889,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Transaction transaction = 4;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionOrBuilder>
            getTransactionOrBuilderList() {
         if (transactionBuilder_ != null) {
           return transactionBuilder_.getMessageOrBuilderList();
@@ -16710,12 +16915,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Transaction transaction = 4;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.Transaction.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.Transaction.Builder>
            getTransactionBuilderList() {
         return getTransactionFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.Transaction, org.bitcoinj.wallet.Protos.Transaction.Builder, org.bitcoinj.wallet.Protos.TransactionOrBuilder> 
+          org.bitcoinj.wallet.Protos.Transaction, org.bitcoinj.wallet.Protos.Transaction.Builder, org.bitcoinj.wallet.Protos.TransactionOrBuilder>
           getTransactionFieldBuilder() {
         if (transactionBuilder_ == null) {
           transactionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -16924,7 +17129,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Script watched_script = 15;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.ScriptOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.ScriptOrBuilder>
            getWatchedScriptOrBuilderList() {
         if (watchedScriptBuilder_ != null) {
           return watchedScriptBuilder_.getMessageOrBuilderList();
@@ -16950,12 +17155,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Script watched_script = 15;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.Script.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.Script.Builder>
            getWatchedScriptBuilderList() {
         return getWatchedScriptFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.Script, org.bitcoinj.wallet.Protos.Script.Builder, org.bitcoinj.wallet.Protos.ScriptOrBuilder> 
+          org.bitcoinj.wallet.Protos.Script, org.bitcoinj.wallet.Protos.Script.Builder, org.bitcoinj.wallet.Protos.ScriptOrBuilder>
           getWatchedScriptFieldBuilder() {
         if (watchedScriptBuilder_ == null) {
           watchedScriptBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -17107,7 +17312,7 @@ public final class Protos {
        * <code>optional .wallet.ScryptParameters encryption_parameters = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.bitcoinj.wallet.Protos.ScryptParameters, org.bitcoinj.wallet.Protos.ScryptParameters.Builder, org.bitcoinj.wallet.Protos.ScryptParametersOrBuilder> 
+          org.bitcoinj.wallet.Protos.ScryptParameters, org.bitcoinj.wallet.Protos.ScryptParameters.Builder, org.bitcoinj.wallet.Protos.ScryptParametersOrBuilder>
           getEncryptionParametersFieldBuilder() {
         if (encryptionParametersBuilder_ == null) {
           encryptionParametersBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -17371,7 +17576,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Extension extension = 10;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.ExtensionOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.ExtensionOrBuilder>
            getExtensionOrBuilderList() {
         if (extensionBuilder_ != null) {
           return extensionBuilder_.getMessageOrBuilderList();
@@ -17397,12 +17602,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Extension extension = 10;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.Extension.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.Extension.Builder>
            getExtensionBuilderList() {
         return getExtensionFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.Extension, org.bitcoinj.wallet.Protos.Extension.Builder, org.bitcoinj.wallet.Protos.ExtensionOrBuilder> 
+          org.bitcoinj.wallet.Protos.Extension, org.bitcoinj.wallet.Protos.Extension.Builder, org.bitcoinj.wallet.Protos.ExtensionOrBuilder>
           getExtensionFieldBuilder() {
         if (extensionBuilder_ == null) {
           extensionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -17459,7 +17664,7 @@ public final class Protos {
           getDescriptionBytes() {
         java.lang.Object ref = description_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           description_ = b;
@@ -17767,7 +17972,7 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Tag tags = 16;</code>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.TagOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.TagOrBuilder>
            getTagsOrBuilderList() {
         if (tagsBuilder_ != null) {
           return tagsBuilder_.getMessageOrBuilderList();
@@ -17793,12 +17998,12 @@ public final class Protos {
       /**
        * <code>repeated .wallet.Tag tags = 16;</code>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.Tag.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.Tag.Builder>
            getTagsBuilderList() {
         return getTagsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.Tag, org.bitcoinj.wallet.Protos.Tag.Builder, org.bitcoinj.wallet.Protos.TagOrBuilder> 
+          org.bitcoinj.wallet.Protos.Tag, org.bitcoinj.wallet.Protos.Tag.Builder, org.bitcoinj.wallet.Protos.TagOrBuilder>
           getTagsFieldBuilder() {
         if (tagsBuilder_ == null) {
           tagsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -18067,7 +18272,7 @@ public final class Protos {
        * transaction signers added to the wallet
        * </pre>
        */
-      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder> 
+      public java.util.List<? extends org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder>
            getTransactionSignersOrBuilderList() {
         if (transactionSignersBuilder_ != null) {
           return transactionSignersBuilder_.getMessageOrBuilderList();
@@ -18105,12 +18310,12 @@ public final class Protos {
        * transaction signers added to the wallet
        * </pre>
        */
-      public java.util.List<org.bitcoinj.wallet.Protos.TransactionSigner.Builder> 
+      public java.util.List<org.bitcoinj.wallet.Protos.TransactionSigner.Builder>
            getTransactionSignersBuilderList() {
         return getTransactionSignersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          org.bitcoinj.wallet.Protos.TransactionSigner, org.bitcoinj.wallet.Protos.TransactionSigner.Builder, org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder> 
+          org.bitcoinj.wallet.Protos.TransactionSigner, org.bitcoinj.wallet.Protos.TransactionSigner.Builder, org.bitcoinj.wallet.Protos.TransactionSignerOrBuilder>
           getTransactionSignersFieldBuilder() {
         if (transactionSignersBuilder_ == null) {
           transactionSignersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -18203,7 +18408,7 @@ public final class Protos {
    * Protobuf type {@code wallet.ExchangeRate}
    *
    * <pre>
-   ** An exchange rate between Bitcoin and some fiat currency. 
+   ** An exchange rate between Bitcoin and some fiat currency.
    * </pre>
    */
   public static final class ExchangeRate extends
@@ -18381,7 +18586,7 @@ public final class Protos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -18401,7 +18606,7 @@ public final class Protos {
         getFiatCurrencyCodeBytes() {
       java.lang.Object ref = fiatCurrencyCode_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         fiatCurrencyCode_ = b;
@@ -18553,7 +18758,7 @@ public final class Protos {
      * Protobuf type {@code wallet.ExchangeRate}
      *
      * <pre>
-     ** An exchange rate between Bitcoin and some fiat currency. 
+     ** An exchange rate between Bitcoin and some fiat currency.
      * </pre>
      */
     public static final class Builder extends
@@ -18671,15 +18876,15 @@ public final class Protos {
 
       public final boolean isInitialized() {
         if (!hasCoinValue()) {
-          
+
           return false;
         }
         if (!hasFiatValue()) {
-          
+
           return false;
         }
         if (!hasFiatCurrencyCode()) {
-          
+
           return false;
         }
         return true;
@@ -18843,7 +19048,7 @@ public final class Protos {
           getFiatCurrencyCodeBytes() {
         java.lang.Object ref = fiatCurrencyCode_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           fiatCurrencyCode_ = b;
@@ -19111,7 +19316,7 @@ public final class Protos {
     internal_static_wallet_Key_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_wallet_Key_descriptor,
-        new java.lang.String[] { "Type", "SecretBytes", "EncryptedData", "PublicKey", "Label", "CreationTimestamp", "DeterministicKey", "DeterministicSeed", "EncryptedDeterministicSeed", });
+        new java.lang.String[] { "Type", "SecretBytes", "EncryptedData", "PublicKey", "Label", "CreationTimestamp", "DeterministicKey", "DeterministicSeed", "EncryptedDeterministicSeed", "AccountPath"});
     internal_static_wallet_Script_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_wallet_Script_fieldAccessorTable = new

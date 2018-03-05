@@ -62,6 +62,24 @@ public interface KeyChainFactory {
      */
     DeterministicKeyChain makeWatchingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isFollowingKey, boolean isMarried) throws UnreadableWalletException;
 
+
+    /**
+     * Make a watching keychain.
+     *
+     * <p>isMarried and isFollowingKey must not be true at the same time.
+     *
+     * @param key the protobuf for the account key
+     * @param firstSubKey the protobuf for the first child key (normally the parent of the external subchain)
+     * @param accountKey the account extended public key
+     * @param isFollowingKey whether the keychain is following in a marriage
+     * @param accountPath
+     * @param isMarried whether the keychain is leading in a marriage
+     */
+    DeterministicKeyChain makeWatchingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey,
+                                               boolean isFollowingKey, boolean isMarried,
+                                               ImmutableList<ChildNumber> accountPath)
+            throws UnreadableWalletException;
+
     /**
      * Make a spending keychain.
      *

@@ -147,6 +147,11 @@ public class DeterministicKeyChainTest {
             }
 
             @Override
+            public DeterministicKeyChain makeWatchingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isFollowingKey, boolean isMarried, ImmutableList<ChildNumber> accountPath) throws UnreadableWalletException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
             public DeterministicKeyChain makeSpendingKeyChain(Protos.Key key, Protos.Key firstSubKey, DeterministicKey accountKey, boolean isMarried) throws UnreadableWalletException {
                 throw new UnsupportedOperationException();
             }

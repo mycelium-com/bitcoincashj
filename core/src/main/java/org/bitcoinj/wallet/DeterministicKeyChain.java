@@ -970,7 +970,8 @@ public class DeterministicKeyChain implements EncryptableKeyChain {
                     else if (seed == null) {
                         DeterministicKey accountKey = new DeterministicKey(immutablePath, chainCode, pubkey, null, null);
                         accountKey.setCreationTimeSeconds(key.getCreationTimestamp() / 1000);
-                        chain = factory.makeWatchingKeyChain(key, iter.peek(), accountKey, isFollowingKey, isMarried);
+                        chain = factory.makeWatchingKeyChain(key, iter.peek(), accountKey, isFollowingKey, isMarried,
+                                immutablePath);
                         isWatchingAccountKey = true;
                     } else {
                         chain = factory.makeKeyChain(key, iter.peek(), seed, crypter, isMarried, originalAccountPath);

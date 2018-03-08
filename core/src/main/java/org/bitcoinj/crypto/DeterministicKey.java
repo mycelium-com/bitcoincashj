@@ -460,7 +460,7 @@ public class DeterministicKey extends ECKey {
         // our path with the length of the parents path.
         ImmutableList<ChildNumber> path = childNumberPath.subList(cursor.getPath().size(), childNumberPath.size());
         for (ChildNumber num : path) {
-            downCursor = HDKeyDerivation.deriveChildKey(downCursor, num);
+            downCursor = HDKeyDerivation.deriveChildKeyNow(downCursor, num);
         }
         // downCursor is now the same key as us, but with private key bytes.
         // If it's not, it means we tried decrypting with an invalid password and earlier checks e.g. for padding didn't
@@ -476,7 +476,7 @@ public class DeterministicKey extends ECKey {
      * <code>HDKeyDerivation.deriveChildKey(this, new ChildNumber(child, false))</code>.
      */
     public DeterministicKey derive(int child) {
-        return HDKeyDerivation.deriveChildKey(this, new ChildNumber(child, true));
+        return HDKeyDerivation.deriveChildKeyNow(this, new ChildNumber(child, true));
     }
 
     /**

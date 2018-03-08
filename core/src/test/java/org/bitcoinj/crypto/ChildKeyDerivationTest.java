@@ -146,8 +146,8 @@ public class ChildKeyDerivationTest {
         DeterministicKey decryptedKey1 = encryptedKey1.decrypt(aesKey);
         assertEquals(key1, decryptedKey1);
 
-        DeterministicKey key2 = HDKeyDerivation.deriveChildKey(key1, ChildNumber.ZERO);
-        DeterministicKey derivedKey2 = HDKeyDerivation.deriveChildKey(encryptedKey1, ChildNumber.ZERO);
+        DeterministicKey key2 = HDKeyDerivation.deriveChildKeyNow(key1, ChildNumber.ZERO);
+        DeterministicKey derivedKey2 = HDKeyDerivation.deriveChildKeyNow(encryptedKey1, ChildNumber.ZERO);
         assertTrue(derivedKey2.isEncrypted());   // parent is encrypted.
         DeterministicKey decryptedKey2 = derivedKey2.decrypt(aesKey);
         assertFalse(decryptedKey2.isEncrypted());
@@ -168,9 +168,9 @@ public class ChildKeyDerivationTest {
     public void pubOnlyDerivation() throws Exception {
         DeterministicKey key1 = HDKeyDerivation.createMasterPrivateKey("satoshi lives!".getBytes());
         assertFalse(key1.isPubKeyOnly());
-        DeterministicKey key2 = HDKeyDerivation.deriveChildKey(key1, ChildNumber.ZERO_HARDENED);
+        DeterministicKey key2 = HDKeyDerivation.deriveChildKeyNow(key1, ChildNumber.ZERO_HARDENED);
         assertFalse(key2.isPubKeyOnly());
-        DeterministicKey key3 = HDKeyDerivation.deriveChildKey(key2, ChildNumber.ZERO);
+        DeterministicKey key3 = HDKeyDerivation.deriveChildKeyNow(key2, ChildNumber.ZERO);
         assertFalse(key3.isPubKeyOnly());
 
         key2 = key2.dropPrivateBytes();
@@ -180,7 +180,7 @@ public class ChildKeyDerivationTest {
         // becomes a true pubkey-only object.
         DeterministicKey pubkey2 = key2.dropParent();
 
-        DeterministicKey pubkey3 = HDKeyDerivation.deriveChildKey(pubkey2, ChildNumber.ZERO);
+        DeterministicKey pubkey3 = HDKeyDerivation.deriveChildKeyNow(pubkey2, ChildNumber.ZERO);
         assertTrue(pubkey3.isPubKeyOnly());
         assertEquals(key3.getPubKeyPoint(), pubkey3.getPubKeyPoint());
     }
@@ -203,7 +203,7 @@ public class ChildKeyDerivationTest {
     @Test
     public void serializeToTextAndBytes() {
         DeterministicKey key1 = HDKeyDerivation.createMasterPrivateKey("satoshi lives!".getBytes());
-        DeterministicKey key2 = HDKeyDerivation.deriveChildKey(key1, ChildNumber.ZERO_HARDENED);
+        DeterministicKey key2 = HDKeyDerivation.deriveChildKeyNow(key1, ChildNumber.ZERO_HARDENED);
 
         // Creation time can't survive the xpub serialization format unfortunately.
         key1.setCreationTimeSeconds(0);
@@ -243,9 +243,9 @@ public class ChildKeyDerivationTest {
     public void parentlessDeserialization() {
         NetworkParameters params = UnitTestParams.get();
         DeterministicKey key1 = HDKeyDerivation.createMasterPrivateKey("satoshi lives!".getBytes());
-        DeterministicKey key2 = HDKeyDerivation.deriveChildKey(key1, ChildNumber.ZERO_HARDENED);
-        DeterministicKey key3 = HDKeyDerivation.deriveChildKey(key2, ChildNumber.ZERO_HARDENED);
-        DeterministicKey key4 = HDKeyDerivation.deriveChildKey(key3, ChildNumber.ZERO_HARDENED);
+        DeterministicKey key2 = HDKeyDerivation.deriveChildKeyNow(key1, ChildNumber.ZERO_HARDENED);
+        DeterministicKey key3 = HDKeyDerivation.deriveChildKeyNow(key2, ChildNumber.ZERO_HARDENED);
+        DeterministicKey key4 = HDKeyDerivation.deriveChildKeyNow(key3, ChildNumber.ZERO_HARDENED);
         assertEquals(key4.getPath().size(), 3);
         assertEquals(DeterministicKey.deserialize(params, key4.serializePrivate(params), key3).getPath().size(), 3);
         assertEquals(DeterministicKey.deserialize(params, key4.serializePrivate(params), null).getPath().size(), 1);

@@ -101,7 +101,7 @@ public final class HDKeyDerivation {
      * where the value of the hardened bit of <code>childNumber</code> is zero.
      */
     public static DeterministicKey deriveChildKey(DeterministicKey parent, int childNumber) {
-        return deriveChildKey(parent, new ChildNumber(childNumber));
+        return deriveChildKeyNow(parent, new ChildNumber(childNumber));
     }
 
     /**
@@ -115,7 +115,7 @@ public final class HDKeyDerivation {
         while (nAttempts < MAX_CHILD_DERIVATION_ATTEMPTS) {
             try {
                 child = new ChildNumber(child.num() + nAttempts, isHardened);
-                return deriveChildKey(parent, child);
+                return deriveChildKeyNow(parent, child);
             } catch (HDDerivationException ignore) { }
             nAttempts++;
         }
@@ -124,14 +124,16 @@ public final class HDKeyDerivation {
     }
 
     /**
+     * Derives a key given the child number using the current time as key creation time
      * @throws HDDerivationException if private derivation is attempted for a public-only parent key, or
      * if the resulting derived key is invalid (eg. private key == 0).
      */
-    public static DeterministicKey deriveChildKey(DeterministicKey parent, ChildNumber childNumber) throws HDDerivationException {
+    public static DeterministicKey deriveChildKeyNow(DeterministicKey parent, ChildNumber childNumber) throws HDDerivationException {
         return deriveChildKey(parent, childNumber,  System.currentTimeMillis() / 1000);
     }
 
     /**
+     * Derives a key given the child number using the specified key creation time
      * @throws HDDerivationException if private derivation is attempted for a public-only parent key, or
      * if the resulting derived key is invalid (eg. private key == 0).
      */

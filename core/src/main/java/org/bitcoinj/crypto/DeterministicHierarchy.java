@@ -90,7 +90,7 @@ public class DeterministicHierarchy {
                     relativePath ? "relative" : "absolute", HDUtils.formatPath(path)));
             checkArgument(absolutePath.size() > 0, "Can't derive the master key: nothing to derive from.");
             DeterministicKey parent = get(absolutePath.subList(0, absolutePath.size() - 1), false, true);
-            putKey(HDKeyDerivation.deriveChildKey(parent, absolutePath.get(absolutePath.size() - 1)));
+            putKey(HDKeyDerivation.deriveChildKeyNow(parent, absolutePath.get(absolutePath.size() - 1)));
         }
         return keys.get(absolutePath);
     }
@@ -148,7 +148,7 @@ public class DeterministicHierarchy {
     }
 
     private DeterministicKey deriveChild(DeterministicKey parent, ChildNumber createChildNumber) {
-        DeterministicKey childKey = HDKeyDerivation.deriveChildKey(parent, createChildNumber);
+        DeterministicKey childKey = HDKeyDerivation.deriveChildKeyNow(parent, createChildNumber);
         putKey(childKey);
         return childKey;
     }

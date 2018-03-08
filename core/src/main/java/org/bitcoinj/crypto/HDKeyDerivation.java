@@ -128,22 +128,7 @@ public final class HDKeyDerivation {
      * if the resulting derived key is invalid (eg. private key == 0).
      */
     public static DeterministicKey deriveChildKey(DeterministicKey parent, ChildNumber childNumber) throws HDDerivationException {
-        if (!parent.hasPrivKey()) {
-            RawKeyBytes rawKey = deriveChildKeyBytesFromPublic(parent, childNumber, PublicDeriveMode.NORMAL);
-            return new DeterministicKey(
-                    HDUtils.append(parent.getPath(), childNumber),
-                    rawKey.chainCode,
-                    new LazyECPoint(ECKey.CURVE.getCurve(), rawKey.keyBytes),
-                    null,
-                    parent, System.currentTimeMillis() / 1000);
-        } else {
-            RawKeyBytes rawKey = deriveChildKeyBytesFromPrivate(parent, childNumber);
-            return new DeterministicKey(
-                    HDUtils.append(parent.getPath(), childNumber),
-                    rawKey.chainCode,
-                    new BigInteger(1, rawKey.keyBytes),
-                    parent);
-        }
+        return deriveChildKey(parent, childNumber,  System.currentTimeMillis() / 1000);
     }
 
     /**
@@ -160,17 +145,18 @@ public final class HDKeyDerivation {
                     rawKey.chainCode,
                     new LazyECPoint(ECKey.CURVE.getCurve(), rawKey.keyBytes),
                     null,
-                    parent);
+                    parent,
+                    creationTimeSeconds);
         } else {
             RawKeyBytes rawKey = deriveChildKeyBytesFromPrivate(parent, childNumber);
             return new DeterministicKey(
                     HDUtils.append(parent.getPath(), childNumber),
                     rawKey.chainCode,
                     new BigInteger(1, rawKey.keyBytes),
-                    parent, creationTimeSeconds);
+                    parent,
+                    creationTimeSeconds);
         }
     }
-
 
     public static RawKeyBytes deriveChildKeyBytesFromPrivate(DeterministicKey parent,
                                                               ChildNumber childNumber) throws HDDerivationException {

@@ -514,13 +514,12 @@ public class PeerGroup implements TransactionBroadcaster {
         }
 
         public void go() {
-            if (!vRunning) return;
+            if (!vRunning || countConnectedAndPendingPeers() >= getMaxConnections()) {
+                return;
+            }
 
             boolean doDiscovery = false;
             long now = Utils.currentTimeMillis();
-            if (countConnectedAndPendingPeers() >= getMaxConnections()) {
-                return;
-            }
             lock.lock();
             try {
                 // First run: try and use a local node if there is one, for the additional security it can provide.

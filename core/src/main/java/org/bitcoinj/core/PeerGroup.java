@@ -518,6 +518,9 @@ public class PeerGroup implements TransactionBroadcaster {
 
             boolean doDiscovery = false;
             long now = Utils.currentTimeMillis();
+            if (countConnectedAndPendingPeers() >= getMaxConnections()) {
+                return;
+            }
             lock.lock();
             try {
                 // First run: try and use a local node if there is one, for the additional security it can provide.
@@ -1047,8 +1050,10 @@ public class PeerGroup implements TransactionBroadcaster {
         for (PeerDiscovery peerDiscovery : peerDiscoverers /* COW */) {
             InetSocketAddress[] addresses;
             addresses = peerDiscovery.getPeers(requiredServices, peerDiscoveryTimeoutMillis, TimeUnit.MILLISECONDS);
-            for (InetSocketAddress address : addresses) addressList.add(new PeerAddress(params, address));
-            if (addressList.size() >= maxPeersToDiscoverCount) break;
+            int peersToAdd = Math.min(maxPeersToDiscoverCount - addresses.length, addresses.length);
+            for(int i = 0; i < peersToAdd; i++) {
+                addressList.add(new PeerAddress(params, addresses[i]));
+            }
         }
         if (!addressList.isEmpty()) {
             for (PeerAddress address : addressList) {

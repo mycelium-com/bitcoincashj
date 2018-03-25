@@ -1,0 +1,425 @@
+diff --git a/.gitignore b/.gitignore
+index 7a2b0042..07840c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -6,3 +6,15 @@ target
+ *.iml
+ *.chain
+ *.spvchain
++
++
++classes
++build/
++bin/
++gen/
++out/
++.gradle
++*.iml
++.idea/
++!.idea/codeStyleSettings.xml
++/gradle.properties
+diff --git a/build.gradle b/build.gradle
+new file mode 100644
+index 00000000..611cff4d
+--- /dev/null
++++ b/build.gradle
+@@ -0,0 +1,28 @@
++allprojects  {
++  apply plugin: 'maven'
++
++  group = 'org.bitcoincashj'
++  version = '0.14.5'
++}
++
++subprojects {
++  apply plugin: 'java'
++  sourceCompatibility = 1.8
++  targetCompatibility = 1.8
++  tasks.withType(JavaCompile) {
++  	options.encoding = 'UTF-8'
++  }
++  
++  repositories {
++    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
++    maven { url "http://repo.maven.apache.org/maven2" }
++  }
++
++  configurations.all {
++  }
++
++  dependencies {
++    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.25'
++    compile group: 'org.slf4j', name: 'slf4j-android', version:'1.7.25'
++  }
++}
+diff --git a/core/build.gradle b/core/build.gradle
+new file mode 100644
+index 00000000..524d98ed
+--- /dev/null
++++ b/core/build.gradle
+@@ -0,0 +1,23 @@
++apply plugin: 'java'
++
++description = 'bitcoincashj'
++dependencies {
++    implementation 'com.h2database:h2:1.3.170'
++    implementation 'com.madgag.spongycastle:core:1.58.0.0'
++    implementation 'com.google.protobuf:protobuf-java:3.1.0'
++    implementation 'com.google.guava:guava:18.0'
++    implementation 'com.google.code.findbugs:jsr305:2.0.1'
++    implementation 'net.jcip:jcip-annotations:1.0'
++    implementation 'com.lambdaworks:scrypt:1.4.0'
++    implementation 'postgresql:postgresql:9.1-901.jdbc4'
++    implementation 'mysql:mysql-connector-java:5.1.33'
++    implementation 'org.fusesource.leveldbjni:leveldbjni-all:1.8'
++    implementation('org.bitcoinj:orchid:1.2.1') {
++        exclude(module: 'slf4j-api')
++    }
++    implementation 'com.squareup.okhttp:okhttp:2.7.5'
++
++    testImplementation 'junit:junit:4.12'
++    testImplementation 'org.easymock:easymock:3.2'
++    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.8.4'
++}
+diff --git a/examples/build.gradle b/examples/build.gradle
+new file mode 100644
+index 00000000..eaa07e80
+--- /dev/null
++++ b/examples/build.gradle
+@@ -0,0 +1,8 @@
++
++description = 'bitcoincashj Examples'
++dependencies {
++  compile project(':bitcoincashj-core')
++    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version:'4.3'
++    compile group: 'com.h2database', name: 'h2', version:'1.3.167'
++    compile group: 'org.fusesource.leveldbjni', name: 'leveldbjni-all', version:'1.8'
++}
+diff --git a/gradle/wrapper/gradle-wrapper.jar b/gradle/wrapper/gradle-wrapper.jar
+new file mode 100644
+index 00000000..7a3265ee
+Binary files /dev/null and b/gradle/wrapper/gradle-wrapper.jar differ
+diff --git a/gradle/wrapper/gradle-wrapper.properties b/gradle/wrapper/gradle-wrapper.properties
+new file mode 100644
+index 00000000..f16d2666
+--- /dev/null
++++ b/gradle/wrapper/gradle-wrapper.properties
+@@ -0,0 +1,5 @@
++distributionBase=GRADLE_USER_HOME
++distributionPath=wrapper/dists
++zipStoreBase=GRADLE_USER_HOME
++zipStorePath=wrapper/dists
++distributionUrl=https\://services.gradle.org/distributions/gradle-4.1-bin.zip
+diff --git a/gradlew b/gradlew
+new file mode 100755
+index 00000000..cccdd3d5
+--- /dev/null
++++ b/gradlew
+@@ -0,0 +1,172 @@
++#!/usr/bin/env sh
++
++##############################################################################
++##
++##  Gradle start up script for UN*X
++##
++##############################################################################
++
++# Attempt to set APP_HOME
++# Resolve links: $0 may be a link
++PRG="$0"
++# Need this for relative symlinks.
++while [ -h "$PRG" ] ; do
++    ls=`ls -ld "$PRG"`
++    link=`expr "$ls" : '.*-> \(.*\)$'`
++    if expr "$link" : '/.*' > /dev/null; then
++        PRG="$link"
++    else
++        PRG=`dirname "$PRG"`"/$link"
++    fi
++done
++SAVED="`pwd`"
++cd "`dirname \"$PRG\"`/" >/dev/null
++APP_HOME="`pwd -P`"
++cd "$SAVED" >/dev/null
++
++APP_NAME="Gradle"
++APP_BASE_NAME=`basename "$0"`
++
++# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
++DEFAULT_JVM_OPTS=""
++
++# Use the maximum available, or set MAX_FD != -1 to use that value.
++MAX_FD="maximum"
++
++warn () {
++    echo "$*"
++}
++
++die () {
++    echo
++    echo "$*"
++    echo
++    exit 1
++}
++
++# OS specific support (must be 'true' or 'false').
++cygwin=false
++msys=false
++darwin=false
++nonstop=false
++case "`uname`" in
++  CYGWIN* )
++    cygwin=true
++    ;;
++  Darwin* )
++    darwin=true
++    ;;
++  MINGW* )
++    msys=true
++    ;;
++  NONSTOP* )
++    nonstop=true
++    ;;
++esac
++
++CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
++
++# Determine the Java command to use to start the JVM.
++if [ -n "$JAVA_HOME" ] ; then
++    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
++        # IBM's JDK on AIX uses strange locations for the executables
++        JAVACMD="$JAVA_HOME/jre/sh/java"
++    else
++        JAVACMD="$JAVA_HOME/bin/java"
++    fi
++    if [ ! -x "$JAVACMD" ] ; then
++        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
++
++Please set the JAVA_HOME variable in your environment to match the
++location of your Java installation."
++    fi
++else
++    JAVACMD="java"
++    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
++
++Please set the JAVA_HOME variable in your environment to match the
++location of your Java installation."
++fi
++
++# Increase the maximum file descriptors if we can.
++if [ "$cygwin" = "false" -a "$darwin" = "false" -a "$nonstop" = "false" ] ; then
++    MAX_FD_LIMIT=`ulimit -H -n`
++    if [ $? -eq 0 ] ; then
++        if [ "$MAX_FD" = "maximum" -o "$MAX_FD" = "max" ] ; then
++            MAX_FD="$MAX_FD_LIMIT"
++        fi
++        ulimit -n $MAX_FD
++        if [ $? -ne 0 ] ; then
++            warn "Could not set maximum file descriptor limit: $MAX_FD"
++        fi
++    else
++        warn "Could not query maximum file descriptor limit: $MAX_FD_LIMIT"
++    fi
++fi
++
++# For Darwin, add options to specify how the application appears in the dock
++if $darwin; then
++    GRADLE_OPTS="$GRADLE_OPTS \"-Xdock:name=$APP_NAME\" \"-Xdock:icon=$APP_HOME/media/gradle.icns\""
++fi
++
++# For Cygwin, switch paths to Windows format before running java
++if $cygwin ; then
++    APP_HOME=`cygpath --path --mixed "$APP_HOME"`
++    CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
++    JAVACMD=`cygpath --unix "$JAVACMD"`
++
++    # We build the pattern for arguments to be converted via cygpath
++    ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`
++    SEP=""
++    for dir in $ROOTDIRSRAW ; do
++        ROOTDIRS="$ROOTDIRS$SEP$dir"
++        SEP="|"
++    done
++    OURCYGPATTERN="(^($ROOTDIRS))"
++    # Add a user-defined pattern to the cygpath arguments
++    if [ "$GRADLE_CYGPATTERN" != "" ] ; then
++        OURCYGPATTERN="$OURCYGPATTERN|($GRADLE_CYGPATTERN)"
++    fi
++    # Now convert the arguments - kludge to limit ourselves to /bin/sh
++    i=0
++    for arg in "$@" ; do
++        CHECK=`echo "$arg"|egrep -c "$OURCYGPATTERN" -`
++        CHECK2=`echo "$arg"|egrep -c "^-"`                                 ### Determine if an option
++
++        if [ $CHECK -ne 0 ] && [ $CHECK2 -eq 0 ] ; then                    ### Added a condition
++            eval `echo args$i`=`cygpath --path --ignore --mixed "$arg"`
++        else
++            eval `echo args$i`="\"$arg\""
++        fi
++        i=$((i+1))
++    done
++    case $i in
++        (0) set -- ;;
++        (1) set -- "$args0" ;;
++        (2) set -- "$args0" "$args1" ;;
++        (3) set -- "$args0" "$args1" "$args2" ;;
++        (4) set -- "$args0" "$args1" "$args2" "$args3" ;;
++        (5) set -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
++        (6) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
++        (7) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
++        (8) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
++        (9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
++    esac
++fi
++
++# Escape application args
++save () {
++    for i do printf %s\\n "$i" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/' \\\\/" ; done
++    echo " "
++}
++APP_ARGS=$(save "$@")
++
++# Collect all arguments for the java command, following the shell quoting and substitution rules
++eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS "\"-Dorg.gradle.appname=$APP_BASE_NAME\"" -classpath "\"$CLASSPATH\"" org.gradle.wrapper.GradleWrapperMain "$APP_ARGS"
++
++# by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong
++if [ "$(uname)" = "Darwin" ] && [ "$HOME" = "$PWD" ]; then
++  cd "$(dirname "$0")"
++fi
++
++exec "$JAVACMD" "$@"
+diff --git a/gradlew.bat b/gradlew.bat
+new file mode 100644
+index 00000000..e95643d6
+--- /dev/null
++++ b/gradlew.bat
+@@ -0,0 +1,84 @@
++@if "%DEBUG%" == "" @echo off
++@rem ##########################################################################
++@rem
++@rem  Gradle startup script for Windows
++@rem
++@rem ##########################################################################
++
++@rem Set local scope for the variables with windows NT shell
++if "%OS%"=="Windows_NT" setlocal
++
++set DIRNAME=%~dp0
++if "%DIRNAME%" == "" set DIRNAME=.
++set APP_BASE_NAME=%~n0
++set APP_HOME=%DIRNAME%
++
++@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
++set DEFAULT_JVM_OPTS=
++
++@rem Find java.exe
++if defined JAVA_HOME goto findJavaFromJavaHome
++
++set JAVA_EXE=java.exe
++%JAVA_EXE% -version >NUL 2>&1
++if "%ERRORLEVEL%" == "0" goto init
++
++echo.
++echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
++echo.
++echo Please set the JAVA_HOME variable in your environment to match the
++echo location of your Java installation.
++
++goto fail
++
++:findJavaFromJavaHome
++set JAVA_HOME=%JAVA_HOME:"=%
++set JAVA_EXE=%JAVA_HOME%/bin/java.exe
++
++if exist "%JAVA_EXE%" goto init
++
++echo.
++echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%
++echo.
++echo Please set the JAVA_HOME variable in your environment to match the
++echo location of your Java installation.
++
++goto fail
++
++:init
++@rem Get command-line arguments, handling Windows variants
++
++if not "%OS%" == "Windows_NT" goto win9xME_args
++
++:win9xME_args
++@rem Slurp the command line arguments.
++set CMD_LINE_ARGS=
++set _SKIP=2
++
++:win9xME_args_slurp
++if "x%~1" == "x" goto execute
++
++set CMD_LINE_ARGS=%*
++
++:execute
++@rem Setup the command line
++
++set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
++
++@rem Execute Gradle
++"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%
++
++:end
++@rem End local scope for the variables with windows NT shell
++if "%ERRORLEVEL%"=="0" goto mainEnd
++
++:fail
++rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
++rem the _cmd.exe /c_ return code!
++if  not "" == "%GRADLE_EXIT_CONSOLE%" exit 1
++exit /b 1
++
++:mainEnd
++if "%OS%"=="Windows_NT" endlocal
++
++:omega
+diff --git a/settings.gradle b/settings.gradle
+new file mode 100644
+index 00000000..491769f1
+--- /dev/null
++++ b/settings.gradle
+@@ -0,0 +1,10 @@
++rootProject.name = 'bitcoincashj-parent'
++include ':bitcoincashj-core'
++include ':bitcoincashj-examples'
++include ':bitcoincashj-tools'
++include ':wallettemplate'
++
++project(':bitcoincashj-core').projectDir = "$rootDir/core" as File
++project(':bitcoincashj-examples').projectDir = "$rootDir/examples" as File
++project(':bitcoincashj-tools').projectDir = "$rootDir/tools" as File
++project(':wallettemplate').projectDir = "$rootDir/wallettemplate" as File
+\ No newline at end of file
+diff --git a/tools/build.gradle b/tools/build.gradle
+new file mode 100644
+index 00000000..b4732fed
+--- /dev/null
++++ b/tools/build.gradle
+@@ -0,0 +1,7 @@
++
++description = 'bitcoincashj Tools'
++dependencies {
++  compile project(':bitcoincashj-core')
++    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version:'4.3'
++    compile group: 'com.h2database', name: 'h2', version:'1.3.167'
++}
+diff --git a/wallettemplate/build.gradle b/wallettemplate/build.gradle
+new file mode 100644
+index 00000000..53b76e58
+--- /dev/null
++++ b/wallettemplate/build.gradle
+@@ -0,0 +1,9 @@
++
++description = 'bitcoincashj Wallet-Template'
++dependencies {
++    compile group: 'org.bitcoinj', name: 'bitcoinj-core', version:'0.14.5'
++    compile group: 'com.google.guava', name: 'guava', version:'18.0'
++    compile group: 'org.fxmisc.easybind', name: 'easybind', version:'1.0.2'
++    compile group: 'de.jensd', name: 'fontawesomefx', version:'8.0.0'
++    compile group: 'net.glxn', name: 'qrgen', version:'1.3'
++}

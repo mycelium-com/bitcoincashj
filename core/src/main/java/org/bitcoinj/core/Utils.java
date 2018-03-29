@@ -58,10 +58,6 @@ public class Utils {
 
     private static BlockingQueue<Boolean> mockSleepQueue;
 
-    /** This and next variable are created to cache {@link #decodeCompactBits(long)} method results
-     * as it's called frequently with the same argument.*/
-    private static long prevCompact;
-    private static BigInteger prevBigInteger;
     /**
      * The regular {@link java.math.BigInteger#toByteArray()} method isn't quite what we often need: it appends a
      * leading zero to indicate that the number is positive and may need padding.
@@ -313,18 +309,18 @@ public class Utils {
      * Thus, all the complexities of the sign bit and using base 256 are probably an implementation accident.</p>
      */
     public static BigInteger decodeCompactBits(long compact) {
-        if (prevCompact == compact) {
-            return prevBigInteger;
+        BigInteger cachedValue = decodeCompactCache.get(compact);
+        if(cachedValue == null) {
+            int size = ((int) (compact >> 24)) & 0xFF;
+            byte[] bytes = new byte[4 + size];
+            bytes[3] = (byte) size;
+            if (size >= 1) bytes[4] = (byte) ((compact >> 16) & 0xFF);
+            if (size >= 2) bytes[5] = (byte) ((compact >> 8) & 0xFF);
+            if (size >= 3) bytes[6] = (byte) (compact & 0xFF);
+            cachedValue = decodeMPI(bytes, true);
+            decodeCompactCache.put(compact, cachedValue);
         }
-        int size = ((int) (compact >> 24)) & 0xFF;
-        byte[] bytes = new byte[4 + size];
-        bytes[3] = (byte) size;
-        if (size >= 1) bytes[4] = (byte) ((compact >> 16) & 0xFF);
-        if (size >= 2) bytes[5] = (byte) ((compact >> 8) & 0xFF);
-        if (size >= 3) bytes[6] = (byte) (compact & 0xFF);
-        prevCompact = compact;
-        prevBigInteger = decodeMPI(bytes, true);
-        return prevBigInteger;
+        return cachedValue;
     }
 
     /**
@@ -655,6 +651,22 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    private static class LruCache<A, B> extends LinkedHashMap<A, B> {
+        private final int maxEntries;
+
+        public LruCache(int maxEntries) {
+            super(maxEntries + 1, 1.0f, true);
+            this.maxEntries = maxEntries;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<A, B> eldest) {
+            return size() > maxEntries;
+        }
+    }
+    // 100 was chosen as lookups are still very fast. According to Sergey Lappo, 2 would already yield a cache hit rate of 99.8%.
+    private static Map<Long, BigInteger> decodeCompactCache = Collections.synchronizedMap(new LruCache<Long, BigInteger>(100));
 
     static long ForkBlockTime = 1501593374; // 6 blocks after the fork time
     public static boolean isAfterFork(long time) { return time >= ForkBlockTime; }

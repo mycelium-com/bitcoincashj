@@ -1248,7 +1248,7 @@ public class Transaction extends ChildMessage {
                             BigInteger.valueOf(this.outputs.get(i).getValue().getValue()),
                             bosHashOutputs
                     );
-                    bosHashOutputs.write(new VarInt(this.outputs.get(i).getScriptBytes().length).encode());
+                    bosHashOutputs.write(VarInt.encode(this.outputs.get(i).getScriptBytes().length));
                     bosHashOutputs.write(this.outputs.get(i).getScriptBytes());
                 }
                 hashOutputs = Sha256Hash.hashTwice(bosHashOutputs.toByteArray());
@@ -1258,7 +1258,7 @@ public class Transaction extends ChildMessage {
                         BigInteger.valueOf(this.outputs.get(inputIndex).getValue().getValue()),
                         bosHashOutputs
                 );
-                bosHashOutputs.write(new VarInt(this.outputs.get(inputIndex).getScriptBytes().length).encode());
+                bosHashOutputs.write(VarInt.encode(this.outputs.get(inputIndex).getScriptBytes().length));
                 bosHashOutputs.write(this.outputs.get(inputIndex).getScriptBytes());
                 hashOutputs = Sha256Hash.hashTwice(bosHashOutputs.toByteArray());
             }
@@ -1267,7 +1267,7 @@ public class Transaction extends ChildMessage {
             bos.write(hashSequence);
             bos.write(inputs.get(inputIndex).getOutpoint().getHash().getReversedBytes());
             uint32ToByteStreamLE(inputs.get(inputIndex).getOutpoint().getIndex(), bos);
-            bos.write(new VarInt(connectedScript.length).encode());
+            bos.write(VarInt.encode(connectedScript.length));
             bos.write(connectedScript);
             uint64ToByteStreamLE(BigInteger.valueOf(prevValue.getValue()), bos);
             uint32ToByteStreamLE(inputs.get(inputIndex).getSequenceNumber(), bos);
@@ -1284,10 +1284,10 @@ public class Transaction extends ChildMessage {
     @Override
     protected void bitcoinSerializeToStream(OutputStream stream) throws IOException {
         uint32ToByteStreamLE(version, stream);
-        stream.write(new VarInt(inputs.size()).encode());
+        stream.write(VarInt.encode(inputs.size()));
         for (TransactionInput in : inputs)
             in.bitcoinSerialize(stream);
-        stream.write(new VarInt(outputs.size()).encode());
+        stream.write(VarInt.encode(outputs.size()));
         for (TransactionOutput out : outputs)
             out.bitcoinSerialize(stream);
         uint32ToByteStreamLE(lockTime, stream);

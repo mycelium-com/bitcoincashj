@@ -511,8 +511,8 @@ public class Utils {
             bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES.length);
             bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES);
             byte[] messageBytes = message.getBytes(Charsets.UTF_8);
-            VarInt size = new VarInt(messageBytes.length);
-            bos.write(size.encode());
+            byte[] size = VarInt.encode(messageBytes.length);
+            bos.write(size);
             bos.write(messageBytes);
             return bos.toByteArray();
         } catch (IOException e) {

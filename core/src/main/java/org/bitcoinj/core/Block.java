@@ -303,11 +303,9 @@ public class Block extends Message {
             return;
         }
 
-        if (transactions != null) {
-            stream.write(new VarInt(transactions.size()).encode());
-            for (Transaction tx : transactions) {
-                tx.bitcoinSerialize(stream);
-            }
+        stream.write(VarInt.encode(transactions.size()));
+        for (Transaction tx : transactions) {
+            tx.bitcoinSerialize(stream);
         }
     }
 

@@ -1082,7 +1082,7 @@ public class Peer extends PeerSocketHandler {
                     // CPeer::PushInventory() which checks CPeer::setInventoryKnown and thus deduplicates.
                     awaitingFreshFilter.add(m.getHash());
                     return;   // Chain download process is restarted via a call to setBloomFilter.
-                } else if (checkForFilterExhaustion(m)) {
+                } else if (m.getAssociatedTransactions().size() > 0 && checkForFilterExhaustion(m)) {
                     // Yes, so we must abandon the attempt to process this block and any further blocks we receive,
                     // then wait for the Bloom filter to be recalculated, sent to this peer and for the peer to acknowledge
                     // that the new filter is now in use (which we have to simulate with a ping/pong), and then we can
@@ -1450,7 +1450,6 @@ public class Peer extends PeerSocketHandler {
             log.info("blockChainDownloadLocked({}): ignoring duplicated request: {}", toHash, chainHeadHash);
             for (Sha256Hash hash : pendingBlockDownloads)
                 log.info("Pending block download: {}", hash);
-            log.info(Throwables.getStackTraceAsString(new Throwable()));
             return;
         }
         if (log.isDebugEnabled())

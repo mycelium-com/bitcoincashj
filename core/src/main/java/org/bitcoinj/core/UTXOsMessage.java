@@ -80,9 +80,9 @@ public class UTXOsMessage extends Message {
     protected void bitcoinSerializeToStream(OutputStream stream) throws IOException {
         Utils.uint32ToByteStreamLE(height, stream);
         stream.write(chainHead.getBytes());
-        stream.write(new VarInt(hits.length).encode());
+        stream.write(VarInt.encode(hits.length));
         stream.write(hits);
-        stream.write(new VarInt(outputs.size()).encode());
+        stream.write(VarInt.encode(outputs.size()));
         for (int i = 0; i < outputs.size(); i++) {
             TransactionOutput output = outputs.get(i);
             Transaction tx = output.getParentTransaction();

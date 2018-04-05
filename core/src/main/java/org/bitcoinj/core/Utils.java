@@ -75,7 +75,7 @@ public class Utils {
         int start = (biBytes.length == numBytes + 1) ? 1 : 0;
         int length = Math.min(biBytes.length, numBytes);
         System.arraycopy(biBytes, start, bytes, numBytes - length, length);
-        return bytes;        
+        return bytes;
     }
 
     public static void uint32ToByteArrayBE(long val, byte[] out, int offset) {
@@ -109,7 +109,7 @@ public class Utils {
         stream.write((int) (0xFF & (val >> 16)));
         stream.write((int) (0xFF & (val >> 24)));
     }
-    
+
     public static void int64ToByteStreamLE(long val, OutputStream stream) throws IOException {
         stream.write((int) (0xFF & val));
         stream.write((int) (0xFF & (val >> 8)));
@@ -164,19 +164,19 @@ public class Utils {
             buf[i] = bytes[bytes.length - 1 - i];
         return buf;
     }
-    
+
     /**
      * Returns a copy of the given byte array with the bytes of each double-word (4 bytes) reversed.
-     * 
+     *
      * @param bytes length must be divisible by 4.
      * @param trimLength trim output to this length.  If positive, must be divisible by 4.
      */
     public static byte[] reverseDwordBytes(byte[] bytes, int trimLength) {
         checkArgument(bytes.length % 4 == 0);
         checkArgument(trimLength < 0 || trimLength % 4 == 0);
-        
+
         byte[] rev = new byte[trimLength >= 0 && bytes.length > trimLength ? trimLength : bytes.length];
-        
+
         for (int i = 0; i < rev.length; i += 4) {
             System.arraycopy(bytes, i, rev, i , 4);
             for (int j = 0; j < 4; j++) {
@@ -254,7 +254,7 @@ public class Utils {
         BigInteger result = new BigInteger(buf);
         return isNegative ? result.negate() : result;
     }
-    
+
     /**
      * MPI encoded numbers are produced by the OpenSSL BN_bn2mpi function. They consist of
      * a 4 byte big endian length field, followed by the stated number of bytes representing
@@ -309,13 +309,18 @@ public class Utils {
      * Thus, all the complexities of the sign bit and using base 256 are probably an implementation accident.</p>
      */
     public static BigInteger decodeCompactBits(long compact) {
-        int size = ((int) (compact >> 24)) & 0xFF;
-        byte[] bytes = new byte[4 + size];
-        bytes[3] = (byte) size;
-        if (size >= 1) bytes[4] = (byte) ((compact >> 16) & 0xFF);
-        if (size >= 2) bytes[5] = (byte) ((compact >> 8) & 0xFF);
-        if (size >= 3) bytes[6] = (byte) (compact & 0xFF);
-        return decodeMPI(bytes, true);
+        BigInteger cachedValue = decodeCompactCache.get(compact);
+        if(cachedValue == null) {
+            int size = ((int) (compact >> 24)) & 0xFF;
+            byte[] bytes = new byte[4 + size];
+            bytes[3] = (byte) size;
+            if (size >= 1) bytes[4] = (byte) ((compact >> 16) & 0xFF);
+            if (size >= 2) bytes[5] = (byte) ((compact >> 8) & 0xFF);
+            if (size >= 3) bytes[6] = (byte) (compact & 0xFF);
+            cachedValue = decodeMPI(bytes, true);
+            decodeCompactCache.put(compact, cachedValue);
+        }
+        return cachedValue;
     }
 
     /**
@@ -511,23 +516,23 @@ public class Utils {
             bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES.length);
             bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES);
             byte[] messageBytes = message.getBytes(Charsets.UTF_8);
-            VarInt size = new VarInt(messageBytes.length);
-            bos.write(size.encode());
+            byte[] size = VarInt.encode(messageBytes.length);
+            bos.write(size);
             bos.write(messageBytes);
             return bos.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);  // Cannot happen.
         }
     }
-    
+
     // 00000001, 00000010, 00000100, 00001000, ...
     private static final int[] bitMask = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-    
+
     /** Checks if the given bit is set in data, using little endian (not the same as Java native big endian) */
     public static boolean checkBitLE(byte[] data, int index) {
         return (data[index >>> 3] & bitMask[7 & index]) != 0;
     }
-    
+
     /** Sets the given bit in data to one, using little endian (not the same as Java native big endian) */
     public static void setBitLE(byte[] data, int index) {
         data[index >>> 3] |= bitMask[7 & index];
@@ -646,6 +651,22 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    private static class LruCache<A, B> extends LinkedHashMap<A, B> {
+        private final int maxEntries;
+
+        public LruCache(int maxEntries) {
+            super(maxEntries + 1, 1.0f, true);
+            this.maxEntries = maxEntries;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<A, B> eldest) {
+            return size() > maxEntries;
+        }
+    }
+    // 100 was chosen as lookups are still very fast. According to Sergey Lappo, 2 would already yield a cache hit rate of 99.8%.
+    private static Map<Long, BigInteger> decodeCompactCache = Collections.synchronizedMap(new LruCache<Long, BigInteger>(100));
 
     static long ForkBlockTime = 1501593374; // 6 blocks after the fork time
     public static boolean isAfterFork(long time) { return time >= ForkBlockTime; }

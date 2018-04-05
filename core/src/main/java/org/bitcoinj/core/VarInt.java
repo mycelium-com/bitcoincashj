@@ -91,6 +91,10 @@ public class VarInt {
      * @return the minimal encoded bytes of the value
      */
     public byte[] encode() {
+        return encode(value);
+    }
+
+    public static byte[] encode(long value) {
         byte[] bytes;
         switch (sizeOf(value)) {
             case 1:

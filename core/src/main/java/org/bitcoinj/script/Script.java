@@ -277,6 +277,27 @@ public class Script {
     }
 
     /**
+     * <p>If a program matches the standard template DUP HASH160 &lt;pubkey hash&gt; EQUALVERIFY CHECKSIG
+     * then this function retrieves the third element.
+     * In this case, this is useful for fetching the destination address of a transaction.</p>
+     *
+     * <p>If a program matches the standard template HASH160 &lt;script hash&gt; EQUAL
+     * then this function retrieves the second element.
+     * In this case, this is useful for fetching the hash of the redeem script of a transaction.</p>
+     *
+     * <p>Otherwise it return null as Exception creation is not a cheap process.</p>
+     *
+     */
+    public byte[] getPubKeyHashUnsafe() {
+        if (isSentToAddress())
+            return chunks.get(2).data;
+        else if (isPayToScriptHash())
+            return chunks.get(1).data;
+        else
+            return null;
+    }
+
+    /**
      * Returns the public key in this script. If a script contains two constants and nothing else, it is assumed to
      * be a scriptSig (input) for a pay-to-address output and the second constant is returned (the first is the
      * signature). If a script contains a constant and an OP_CHECKSIG opcode, the constant is returned as it is

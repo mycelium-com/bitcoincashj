@@ -1616,7 +1616,7 @@ public class Wallet extends BaseTaggableObject
     public void isConsistentOrThrow() throws IllegalStateException {
         lock.lock();
         try {
-            Set<Transaction> transactions = getTransactions(true);
+            Collection<Transaction> transactions = this.transactions.values();
 
             Set<Sha256Hash> hashes = new HashSet<Sha256Hash>();
             for (Transaction tx : transactions) {
@@ -1658,10 +1658,13 @@ public class Wallet extends BaseTaggableObject
         boolean isActuallySpent = true;
         for (TransactionOutput o : tx.getOutputs()) {
             if (o.isAvailableForSpending()) {
-                if (o.isMineOrWatched(this)) isActuallySpent = false;
                 if (o.getSpentBy() != null) {
                     log.error("isAvailableForSpending != spentBy");
                     return false;
+                }
+                if (o.isMineOrWatched(this)) {
+                    isActuallySpent = false;
+                    return isActuallySpent == isSpent;
                 }
             } else {
                 if (o.getSpentBy() == null) {
@@ -2158,7 +2161,7 @@ public class Wallet extends BaseTaggableObject
             return;
         for (Map.Entry<Transaction, TransactionConfidence.Listener.ChangeReason> entry : confidenceChanged.entrySet()) {
             final Transaction tx = entry.getKey();
-            tx.getConfidence().queueListeners(entry.getValue());
+            tx.getConfidence(context).queueListeners(entry.getValue());
             queueOnTransactionConfidenceChanged(tx);
         }
         confidenceChanged.clear();
@@ -2182,31 +2185,19 @@ public class Wallet extends BaseTaggableObject
         lock.lock();
         try {
             // Store the new block hash.
+            context.setBlockChainHeight(block.getHeight());
             setLastBlockSeenHash(newBlockHash);
             setLastBlockSeenHeight(block.getHeight());
             setLastBlockSeenTimeSecs(block.getHeader().getTimeSeconds());
             // Notify all the BUILDING transactions of the new block.
             // This is so that they can update their depth.
-            Set<Transaction> transactions = getTransactions(true);
-            for (Transaction tx : transactions) {
+            for (Transaction tx : this.transactions.values()) {
                 if (ignoreNextNewBlock.contains(tx.getHash())) {
                     // tx was already processed in receive() due to it appearing in this block, so we don't want to
                     // increment the tx confidence depth twice, it'd result in miscounting.
                     ignoreNextNewBlock.remove(tx.getHash());
                 } else {
-                    TransactionConfidence confidence = tx.getConfidence();
-                    if (confidence.getConfidenceType() == ConfidenceType.BUILDING) {
-                        // Erase the set of seen peers once the tx is so deep that it seems unlikely to ever go
-                        // pending again. We could clear this data the moment a tx is seen in the block chain, but
-                        // in cases where the chain re-orgs, this would mean that wallets would perceive a newly
-                        // pending tx has zero confidence at all, which would not be right: we expect it to be
-                        // included once again. We could have a separate was-in-chain-and-now-isn't confidence type
-                        // but this way is backwards compatible with existing software, and the new state probably
-                        // wouldn't mean anything different to just remembering peers anyway.
-                        if (confidence.incrementDepthInBlocks() > context.getEventHorizon())
-                            confidence.clearBroadcastBy();
-                        confidenceChanged.put(tx, TransactionConfidence.Listener.ChangeReason.DEPTH);
-                    }
+                    confidenceChanged.put(tx, TransactionConfidence.Listener.ChangeReason.DEPTH);
                 }
             }
 
@@ -2214,7 +2205,8 @@ public class Wallet extends BaseTaggableObject
             maybeQueueOnWalletChanged();
 
             if (hardSaveOnNextBlock) {
-                saveNow();
+                //saveNow();
+                saveLater();
                 hardSaveOnNextBlock = false;
             } else {
                 // Coalesce writes to avoid throttling on disk access when catching up with the chain.
@@ -2792,6 +2784,9 @@ public class Wallet extends BaseTaggableObject
     }
 
     private void queueOnTransactionConfidenceChanged(final Transaction tx) {
+        if (transactionConfidenceListeners.isEmpty()) {
+            return;
+        }
         checkState(lock.isHeldByCurrentThread());
         for (final ListenerRegistration<TransactionConfidenceEventListener> registration : transactionConfidenceListeners) {
             if (registration.executor == Threading.SAME_THREAD) {
@@ -2884,6 +2879,9 @@ public class Wallet extends BaseTaggableObject
     public Set<Transaction> getTransactions(boolean includeDead) {
         lock.lock();
         try {
+            if (includeDead) {
+                return new HashSet<>(transactions.values());
+            }
             Set<Transaction> all = new HashSet<Transaction>();
             all.addAll(unspent.values());
             all.addAll(spent.values());
@@ -4566,7 +4564,6 @@ public class Wallet extends BaseTaggableObject
     private void subtractDepth(int depthToSubtract, Collection<Transaction> transactions) {
         for (Transaction tx : transactions) {
             if (tx.getConfidence().getConfidenceType() == ConfidenceType.BUILDING) {
-                tx.getConfidence().setDepthInBlocks(tx.getConfidence().getDepthInBlocks() - depthToSubtract);
                 confidenceChanged.put(tx, TransactionConfidence.Listener.ChangeReason.DEPTH);
             }
         }

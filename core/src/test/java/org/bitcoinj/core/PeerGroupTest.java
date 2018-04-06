@@ -23,10 +23,12 @@ import com.google.common.net.*;
 import com.google.common.util.concurrent.*;
 import org.bitcoinj.core.listeners.*;
 import org.bitcoinj.net.discovery.*;
+import org.bitcoinj.suite.SlowTests;
 import org.bitcoinj.testing.*;
 import org.bitcoinj.utils.*;
 import org.bitcoinj.wallet.Wallet;
 import org.junit.*;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
@@ -738,6 +740,7 @@ public class PeerGroupTest extends TestWithPeerGroup {
     }
 
     @Test
+    @Category(SlowTests.class)
     public void preferLocalPeer() throws IOException {
         // Because we are using the same port (8333 or 18333) that is used by Bitcoin Core
         // We have to consider 2 cases:

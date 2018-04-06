@@ -19,6 +19,7 @@ package org.bitcoinj.core;
 import com.google.common.collect.*;
 import org.bitcoinj.core.listeners.*;
 import org.bitcoinj.params.TestNet3Params;
+import org.bitcoinj.suite.SlowTests;
 import org.bitcoinj.testing.FakeTxBuilder;
 import org.bitcoinj.testing.InboundMessageQueuer;
 import org.bitcoinj.testing.TestWithNetworkConnections;
@@ -32,6 +33,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -916,7 +918,8 @@ public class PeerTest extends TestWithNetworkConnections {
         assertEquals(future2.get(), response2);
     }
 
-    @Test
+    @Test(timeout=10000)
+    @Category(SlowTests.class)
     public void badMessage() throws Exception {
         // Bring up an actual network connection and feed it bogus data.
         final SettableFuture<Void> result = SettableFuture.create();

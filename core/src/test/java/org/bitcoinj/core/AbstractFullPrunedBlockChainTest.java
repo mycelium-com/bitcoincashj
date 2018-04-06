@@ -23,6 +23,7 @@ import org.bitcoinj.params.UnitTestParams;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.FullPrunedBlockStore;
+import org.bitcoinj.suite.SlowTests;
 import org.bitcoinj.utils.BlockFileLoader;
 import org.bitcoinj.utils.BriefLogFormatter;
 import org.bitcoinj.wallet.SendRequest;
@@ -30,6 +31,7 @@ import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.WalletTransaction;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +74,7 @@ public abstract class AbstractFullPrunedBlockChainTest {
     public abstract void resetStore(FullPrunedBlockStore store) throws BlockStoreException;
 
     @Test
+    @Category(SlowTests.class)
     public void testGeneratedChain() throws Exception {
         // Tests various test cases from FullBlockTestGenerator
         FullBlockTestGenerator generator = new FullBlockTestGenerator(PARAMS);

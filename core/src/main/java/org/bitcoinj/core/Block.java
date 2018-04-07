@@ -890,7 +890,7 @@ public class Block extends Message {
 
     static final byte[] EMPTY_BYTES = new byte[32];
 
-    // It's pretty weak to have this around at runtime: fix later.
+    // FIXME: It's pretty weak to have this around at runtime: fix later.
     private static final byte[] pubkeyForTesting = new ECKey().getPubKey();
 
     /**

@@ -318,22 +318,31 @@ public class TransactionOutput extends ChildMessage {
      * Returns true if this output is to a key, or an address we have the keys for, in the wallet.
      */
     public boolean isMine(TransactionBag transactionBag) {
-        try {
-            Script script = getScriptPubKey();
-            if (script.isSentToRawPubKey()) {
-                byte[] pubkey = script.getPubKey();
-                return transactionBag.isPubKeyMine(pubkey);
-            } if (script.isPayToScriptHash()) {
-                return transactionBag.isPayToScriptHashMine(script.getPubKeyHash());
-            } else {
-                byte[] pubkeyHash = script.getPubKeyHash();
-                return transactionBag.isPubKeyHashMine(pubkeyHash);
-            }
-        } catch (ScriptException e) {
-            // Just means we didn't understand the output of this transaction: ignore it.
-            log.debug("Could not parse tx {} output script: {}", parent != null ? parent.getHash() : "(no parent)", e.toString());
-            return false;
+        Script script = getScriptPubKey();
+        if (script.isSentToRawPubKey()) {
+            byte[] pubkey = script.getPubKey();
+            return transactionBag.isPubKeyMine(pubkey);
         }
+        if (script.isPayToScriptHash()) {
+            byte[] pubkeyHash = script.getPubKeyHashUnsafe();
+            if (pubkeyHash != null) {
+                return transactionBag.isPayToScriptHashMine(pubkeyHash);
+            } else {
+                // Just means we didn't understand the output of this transaction: ignore it.
+                log.debug("Could not parse tx {} output script: {}", parent != null ? parent.getHash() : "(no parent)");
+                return false;
+            }
+        } else {
+            byte[] pubkeyHash = script.getPubKeyHashUnsafe();
+            if (pubkeyHash != null) {
+                return transactionBag.isPubKeyHashMine(pubkeyHash);
+            } else {
+                // Just means we didn't understand the output of this transaction: ignore it.
+                log.debug("Could not parse tx {} output script: {}", parent != null ? parent.getHash() : "(no parent)");
+                return false;
+            }
+        }
+
     }
 
     /**

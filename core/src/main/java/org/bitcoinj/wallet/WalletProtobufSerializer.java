@@ -26,9 +26,13 @@ import org.bitcoinj.signers.LocalTransactionSigner;
 import org.bitcoinj.signers.TransactionSigner;
 import org.bitcoinj.utils.ExchangeRate;
 import org.bitcoinj.utils.Fiat;
+import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.Protos.Wallet.EncryptionType;
 
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.TextFormat;
@@ -753,7 +757,6 @@ public class WalletProtobufSerializer {
                 log.warn("Have depth but not BUILDING for tx {}", tx.getHashAsString());
                 return;
             }
-            confidence.setDepthInBlocks(confidenceProto.getDepth());
         }
         if (confidenceProto.hasOverridingTransaction()) {
             if (confidence.getConfidenceType() != ConfidenceType.DEAD) {

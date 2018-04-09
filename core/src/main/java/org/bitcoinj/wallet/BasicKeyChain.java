@@ -204,18 +204,20 @@ public class BasicKeyChain implements EncryptableKeyChain {
     }
 
     public ECKey findKeyFromPubHash(byte[] pubkeyHash) {
+        ByteString keyHashString = ByteString.copyFrom(pubkeyHash);
         lock.lock();
         try {
-            return hashToKeys.get(ByteString.copyFrom(pubkeyHash));
+            return hashToKeys.get(keyHashString);
         } finally {
             lock.unlock();
         }
     }
 
     public ECKey findKeyFromPubKey(byte[] pubkey) {
+        ByteString keyHashString = ByteString.copyFrom(pubkey);
         lock.lock();
         try {
-            return pubkeyToKeys.get(ByteString.copyFrom(pubkey));
+            return pubkeyToKeys.get(keyHashString);
         } finally {
             lock.unlock();
         }

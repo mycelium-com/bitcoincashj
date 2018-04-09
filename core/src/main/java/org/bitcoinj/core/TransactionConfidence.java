@@ -19,6 +19,8 @@ package org.bitcoinj.core;
 
 import com.google.common.collect.*;
 import com.google.common.util.concurrent.*;
+
+import org.bitcoinj.core.listeners.BlockChainListener;
 import org.bitcoinj.utils.*;
 import org.bitcoinj.wallet.Wallet;
 
@@ -54,8 +56,6 @@ import static com.google.common.base.Preconditions.*;
  * <p>Alternatively, you may know that the transaction is "dead", that is, one or more of its inputs have
  * been double spent and will never confirm unless there is another re-org.</p>
  *
- * <p>TransactionConfidence is updated via the {@link org.bitcoinj.core.TransactionConfidence#incrementDepthInBlocks()}
- * method to ensure the block depth is up to date.</p>
  * To make a copy that won't be changed, use {@link org.bitcoinj.core.TransactionConfidence#duplicate()}.
  */
 public class TransactionConfidence {
@@ -72,9 +72,6 @@ public class TransactionConfidence {
     private final Sha256Hash hash;
     // Lazily created listeners array.
     private CopyOnWriteArrayList<ListenerRegistration<Listener>> listeners;
-
-    // The depth of the transaction on the best chain in blocks. An unconfirmed block has depth 0.
-    private int depth;
 
     /** Describes the state of the transaction in general terms. Properties can be read to learn specifics. */
     public enum ConfidenceType {
@@ -148,6 +145,21 @@ public class TransactionConfidence {
         broadcastBy = new CopyOnWriteArrayList<PeerAddress>();
         listeners = new CopyOnWriteArrayList<ListenerRegistration<Listener>>();
         this.hash = hash;
+        int numConfirms = Context.get().getEventHorizon();
+        if (getDepthInBlocks() < numConfirms || getBroadcastBy() != null) {
+            ListenableFuture<TransactionConfidence> future = getDepthFuture(numConfirms, Threading.SAME_THREAD);
+            Futures.addCallback(future, new FutureCallback<TransactionConfidence>() {
+                @Override
+                public void onFailure(Throwable t) {
+
+                }
+
+                @Override
+                public void onSuccess(TransactionConfidence result) {
+                    clearBroadcastBy();
+                }
+            });
+        }
     }
 
     /**
@@ -250,7 +262,6 @@ public class TransactionConfidence {
         if (appearedAtChainHeight < 0)
             throw new IllegalArgumentException("appearedAtChainHeight out of range");
         this.appearedAtChainHeight = appearedAtChainHeight;
-        this.depth = 1;
         setConfidenceType(ConfidenceType.BUILDING);
     }
 
@@ -273,7 +284,6 @@ public class TransactionConfidence {
             overridingTransaction = null;
         }
         if (confidenceType == ConfidenceType.PENDING || confidenceType == ConfidenceType.IN_CONFLICT) {
-            depth = 0;
             appearedAtChainHeight = -1;
         }
     }
@@ -363,16 +373,6 @@ public class TransactionConfidence {
     }
 
     /**
-     * Called by the wallet when the tx appears on the best chain and a new block is added to the top. Updates the
-     * internal counter that tracks how deeply buried the block is.
-     *
-     * @return the new depth
-     */
-    public synchronized int incrementDepthInBlocks() {
-        return ++this.depth;
-    }
-
-    /**
      * <p>Depth in the chain is an approximation of how much time has elapsed since the transaction has been confirmed.
      * On average there is supposed to be a new block every 10 minutes, but the actual rate may vary. Bitcoin Core
      * considers a transaction impractical to reverse after 6 blocks, but as of EOY 2011 network
@@ -383,14 +383,7 @@ public class TransactionConfidence {
      * the depth is zero.</p>
      */
     public synchronized int getDepthInBlocks() {
-        return depth;
-    }
-
-    /*
-     * Set the depth in blocks. Having one block confirmation is a depth of one.
-     */
-    public synchronized void setDepthInBlocks(int depth) {
-        this.depth = depth;
+        return Context.get().getBlockChainHeight() - appearedAtChainHeight;
     }
 
     /**
@@ -449,7 +442,9 @@ public class TransactionConfidence {
      * explicitly, more precise control is available. Note that this will run the listeners on the user code thread.
      */
     public void queueListeners(final Listener.ChangeReason reason) {
-        for (final ListenerRegistration<Listener> registration : listeners) {
+        //Replaced with for loop as iterator init consumpted 11% of cpu time
+        for (int counter = 0; counter <  listeners.size(); counter++) {
+            final ListenerRegistration<Listener> registration = listeners.get(counter);
             registration.executor.execute(new Runnable() {
                 @Override
                 public void run() {

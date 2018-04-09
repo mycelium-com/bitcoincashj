@@ -264,16 +264,16 @@ public class Script {
      * then this function retrieves the second element.
      * In this case, this is useful for fetching the hash of the redeem script of a transaction.</p>
      * 
-     * <p>Otherwise it throws a ScriptException.</p>
+     * <p>Otherwise it throws a NoTraceScriptException.</p>
      *
      */
-    public byte[] getPubKeyHash() throws ScriptException {
+    public byte[] getPubKeyHash() throws NoTraceScriptException {
         if (isSentToAddress())
             return chunks.get(2).data;
         else if (isPayToScriptHash())
             return chunks.get(1).data;
         else
-            throw new ScriptException("Script not in the standard scriptPubKey form");
+            throw new NoTraceScriptException("Script not in the standard scriptPubKey form");
     }
 
     /**

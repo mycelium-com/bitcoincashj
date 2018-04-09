@@ -179,8 +179,8 @@ public class BasicKeyChain implements EncryptableKeyChain {
         }
         byte [] pubKey = key.getPubKey();
         byte [] pubKeyHash = key.getPubKeyHash();
-        ECKey previousKey = pubkeyToKeys.put(ByteBuffer.wrap(Arrays.copyOf(pubKey, pubKey.length)), key);
-        hashToKeys.put(ByteBuffer.wrap(Arrays.copyOf(pubKeyHash, pubKeyHash.length)), key);
+        ECKey previousKey = pubkeyToKeys.put(ByteBuffer.wrap(pubKey), key);
+        hashToKeys.put(ByteBuffer.wrap(pubKeyHash), key);
         checkState(previousKey == null);
     }
 

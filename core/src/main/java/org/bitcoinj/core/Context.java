@@ -16,6 +16,8 @@ package org.bitcoinj.core;
 
 import org.slf4j.*;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static com.google.common.base.Preconditions.*;
 
 // TODO: Finish adding Context c'tors to all the different objects so we can start deprecating the versions that take NetworkParameters.
@@ -46,6 +48,7 @@ public class Context {
     private int eventHorizon = 100;
     private boolean ensureMinRequiredFee = true;
     private Coin feePerKb = Transaction.DEFAULT_TX_FEE;
+    private static AtomicInteger blockChainHeight = new AtomicInteger(0);
 
     /**
      * Creates a new context object. For now, this will be done for you by the framework. Eventually you will be
@@ -188,5 +191,13 @@ public class Context {
      */
     public boolean isEnsureMinRequiredFee() {
         return ensureMinRequiredFee;
+    }
+
+    public static int getBlockChainHeight() {
+        return blockChainHeight.get();
+    }
+
+    public static void setBlockChainHeight(int blockChainHeight) {
+        Context.blockChainHeight.set(blockChainHeight);
     }
 }

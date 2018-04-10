@@ -2182,6 +2182,7 @@ public class Wallet extends BaseTaggableObject
         lock.lock();
         try {
             // Store the new block hash.
+            Context.setBlockChainHeight(block.getHeight());
             setLastBlockSeenHash(newBlockHash);
             setLastBlockSeenHeight(block.getHeight());
             setLastBlockSeenTimeSecs(block.getHeader().getTimeSeconds());
@@ -2194,17 +2195,7 @@ public class Wallet extends BaseTaggableObject
                     // increment the tx confidence depth twice, it'd result in miscounting.
                     ignoreNextNewBlock.remove(tx.getHash());
                 } else {
-                    TransactionConfidence confidence = tx.getConfidence();
-                    if (confidence.getConfidenceType() == ConfidenceType.BUILDING) {
-                        // Erase the set of seen peers once the tx is so deep that it seems unlikely to ever go
-                        // pending again. We could clear this data the moment a tx is seen in the block chain, but
-                        // in cases where the chain re-orgs, this would mean that wallets would perceive a newly
-                        // pending tx has zero confidence at all, which would not be right: we expect it to be
-                        // included once again. We could have a separate was-in-chain-and-now-isn't confidence type
-                        // but this way is backwards compatible with existing software, and the new state probably
-                        // wouldn't mean anything different to just remembering peers anyway.
-                        if (confidence.incrementDepthInBlocks() > context.getEventHorizon())
-                            confidence.clearBroadcastBy();
+                    if (tx.getConfidence().getConfidenceType() == ConfidenceType.BUILDING) {
                         confidenceChanged.put(tx, TransactionConfidence.Listener.ChangeReason.DEPTH);
                     }
                 }
@@ -4515,15 +4506,6 @@ public class Wallet extends BaseTaggableObject
             // doesn't matter - the miners deleted T1 from their mempool, will resurrect T2 and put that into the
             // mempool and so T1 is still seen as a losing double spend.
 
-            // The old blocks have contributed to the depth for all the transactions in the
-            // wallet that are in blocks up to and including the chain split block.
-            // The total depth is calculated here and then subtracted from the appropriate transactions.
-            int depthToSubtract = oldBlocks.size();
-            log.info("depthToSubtract = " + depthToSubtract);
-            // Remove depthToSubtract from all transactions in the wallet except for pending.
-            subtractDepth(depthToSubtract, spent.values());
-            subtractDepth(depthToSubtract, unspent.values());
-            subtractDepth(depthToSubtract, dead.values());
 
             // The effective last seen block is now the split point so set the lastSeenBlockHash.
             setLastBlockSeenHash(splitPoint.getHeader().getHash());
@@ -4557,18 +4539,6 @@ public class Wallet extends BaseTaggableObject
             saveLater();
         } finally {
             lock.unlock();
-        }
-    }
-
-    /**
-     * Subtract the supplied depth from the given transactions.
-     */
-    private void subtractDepth(int depthToSubtract, Collection<Transaction> transactions) {
-        for (Transaction tx : transactions) {
-            if (tx.getConfidence().getConfidenceType() == ConfidenceType.BUILDING) {
-                tx.getConfidence().setDepthInBlocks(tx.getConfidence().getDepthInBlocks() - depthToSubtract);
-                confidenceChanged.put(tx, TransactionConfidence.Listener.ChangeReason.DEPTH);
-            }
         }
     }
 

@@ -1663,7 +1663,9 @@ public class Wallet extends BaseTaggableObject
                     log.error("isAvailableForSpending != spentBy");
                     return false;
                 }
-                return true;
+                if (!isActuallySpent) {
+                    return !isSpent;
+                }
             } else {
                 if (o.getSpentBy() == null) {
                     log.error("isAvailableForSpending != spentBy");

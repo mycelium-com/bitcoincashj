@@ -5,7 +5,8 @@ target
 .idea
 *.iml
 *.chain
-*.spvchain
+WalletTemplate*.*
+local.properties
 
 
 classes

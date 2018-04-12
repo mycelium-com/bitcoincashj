@@ -29,6 +29,8 @@ import com.google.protobuf.ByteString;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import javax.annotation.Nullable;
+
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
@@ -45,8 +47,8 @@ public class BasicKeyChain implements EncryptableKeyChain {
     private final ReentrantLock lock = Threading.lock("BasicKeyChain");
 
     // Maps used to let us quickly look up a key given data we find in transcations or the block chain.
-    private final LinkedHashMap<ByteString, ECKey> hashToKeys;
-    private final LinkedHashMap<ByteString, ECKey> pubkeyToKeys;
+    private final LinkedHashMap<ByteBuffer, ECKey> hashToKeys = new LinkedHashMap<>();
+    private final LinkedHashMap<ByteBuffer, ECKey> pubkeyToKeys = new LinkedHashMap<>();
     @Nullable private final KeyCrypter keyCrypter;
     private boolean isWatching;
 
@@ -58,8 +60,6 @@ public class BasicKeyChain implements EncryptableKeyChain {
 
     public BasicKeyChain(@Nullable KeyCrypter crypter) {
         this.keyCrypter = crypter;
-        hashToKeys = new LinkedHashMap<ByteString, ECKey>();
-        pubkeyToKeys = new LinkedHashMap<ByteString, ECKey>();
         listeners = new CopyOnWriteArrayList<ListenerRegistration<KeyChainEventListener>>();
     }
 
@@ -177,8 +177,8 @@ public class BasicKeyChain implements EncryptableKeyChain {
             if (!key.isWatching() && isWatching)
                 throw new IllegalArgumentException("Key is not watching but chain is");
         }
-        ECKey previousKey = pubkeyToKeys.put(ByteString.copyFrom(key.getPubKey()), key);
-        hashToKeys.put(ByteString.copyFrom(key.getPubKeyHash()), key);
+        ECKey previousKey = pubkeyToKeys.put(ByteBuffer.wrap(key.getPubKey()), key);
+        hashToKeys.put(ByteBuffer.wrap(key.getPubKeyHash()), key);
         checkState(previousKey == null);
     }
 
@@ -206,7 +206,7 @@ public class BasicKeyChain implements EncryptableKeyChain {
     public ECKey findKeyFromPubHash(byte[] pubkeyHash) {
         lock.lock();
         try {
-            return hashToKeys.get(ByteString.copyFrom(pubkeyHash));
+            return hashToKeys.get(ByteBuffer.wrap(pubkeyHash));
         } finally {
             lock.unlock();
         }
@@ -215,7 +215,7 @@ public class BasicKeyChain implements EncryptableKeyChain {
     public ECKey findKeyFromPubKey(byte[] pubkey) {
         lock.lock();
         try {
-            return pubkeyToKeys.get(ByteString.copyFrom(pubkey));
+            return pubkeyToKeys.get(ByteBuffer.wrap(pubkey));
         } finally {
             lock.unlock();
         }
@@ -261,8 +261,8 @@ public class BasicKeyChain implements EncryptableKeyChain {
     public boolean removeKey(ECKey key) {
         lock.lock();
         try {
-            boolean a = hashToKeys.remove(ByteString.copyFrom(key.getPubKeyHash())) != null;
-            boolean b = pubkeyToKeys.remove(ByteString.copyFrom(key.getPubKey())) != null;
+            boolean a = hashToKeys.remove(ByteBuffer.wrap(key.getPubKeyHash())) != null;
+            boolean b = pubkeyToKeys.remove(ByteBuffer.wrap(key.getPubKey())) != null;
             checkState(a == b);   // Should be in both maps or neither.
             return a;
         } finally {

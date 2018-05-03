@@ -267,6 +267,7 @@ public class SPVBlockStore implements BlockStore {
                 WindowsMMapHack.forceRelease(buffer);
             }
             buffer = null;  // Allow it to be GCd and the underlying file mapping to go away.
+            fileLock.release();
             randomAccessFile.close();
         } catch (IOException e) {
             throw new BlockStoreException(e);

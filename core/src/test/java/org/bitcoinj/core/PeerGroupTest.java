@@ -739,6 +739,7 @@ public class PeerGroupTest extends TestWithPeerGroup {
         peerGroup.stop();
     }
 
+    @Ignore
     @Test
     @Category(SlowTests.class)
     public void preferLocalPeer() throws IOException {

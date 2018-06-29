@@ -753,7 +753,6 @@ public class WalletProtobufSerializer {
                 log.warn("Have depth but not BUILDING for tx {}", tx.getHashAsString());
                 return;
             }
-            confidence.setDepthInBlocks(confidenceProto.getDepth());
         }
         if (confidenceProto.hasOverridingTransaction()) {
             if (confidence.getConfidenceType() != ConfidenceType.DEAD) {

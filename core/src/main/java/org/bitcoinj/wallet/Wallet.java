@@ -1616,7 +1616,7 @@ public class Wallet extends BaseTaggableObject
     public void isConsistentOrThrow() throws IllegalStateException {
         lock.lock();
         try {
-            Set<Transaction> transactions = getTransactions(true);
+            Collection<Transaction> transactions = this.transactions.values();
 
             Set<Sha256Hash> hashes = new HashSet<Sha256Hash>();
             for (Transaction tx : transactions) {
@@ -1662,6 +1662,9 @@ public class Wallet extends BaseTaggableObject
                 if (o.getSpentBy() != null) {
                     log.error("isAvailableForSpending != spentBy");
                     return false;
+                }
+                if (!isActuallySpent) {
+                    return !isSpent;
                 }
             } else {
                 if (o.getSpentBy() == null) {
@@ -1909,7 +1912,7 @@ public class Wallet extends BaseTaggableObject
      * Adds to txSet all the txns in txPool spending outputs of txns in txSet,
      * and all txns spending the outputs of those txns, recursively.
      */
-    void addTransactionsDependingOn(Set<Transaction> txSet, Set<Transaction> txPool) {
+    void addTransactionsDependingOn(Set<Transaction> txSet, Collection<Transaction> txPool) {
         Map<Sha256Hash, Transaction> txQueue = new LinkedHashMap<Sha256Hash, Transaction>();
         for (Transaction tx : txSet) {
             txQueue.put(tx.getHash(), tx);
@@ -2052,7 +2055,7 @@ public class Wallet extends BaseTaggableObject
                 // change its confidence to PENDING (Unless they are also spending other txns IN_CONFLICT).
                 // Consider dependency chains.
                 Set<Transaction> currentTxDependencies = Sets.newHashSet(tx);
-                addTransactionsDependingOn(currentTxDependencies, getTransactions(true));
+                addTransactionsDependingOn(currentTxDependencies, transactions.values());
                 currentTxDependencies.remove(tx);
                 List<Transaction> currentTxDependenciesSorted = sortTxnsByDependency(currentTxDependencies);
                 for (Transaction txDependency : currentTxDependenciesSorted) {
@@ -2187,8 +2190,7 @@ public class Wallet extends BaseTaggableObject
             setLastBlockSeenTimeSecs(block.getHeader().getTimeSeconds());
             // Notify all the BUILDING transactions of the new block.
             // This is so that they can update their depth.
-            Set<Transaction> transactions = getTransactions(true);
-            for (Transaction tx : transactions) {
+            for (Transaction tx : transactions.values()) {
                 if (ignoreNextNewBlock.contains(tx.getHash())) {
                     // tx was already processed in receive() due to it appearing in this block, so we don't want to
                     // increment the tx confidence depth twice, it'd result in miscounting.
@@ -2511,7 +2513,7 @@ public class Wallet extends BaseTaggableObject
                 log.info("->pending (IN_CONFLICT): {}", tx.getHashAsString());
                 addWalletTransaction(Pool.PENDING, tx);
                 doubleSpendPendingTxns.add(tx);
-                addTransactionsDependingOn(doubleSpendPendingTxns, getTransactions(true));
+                addTransactionsDependingOn(doubleSpendPendingTxns, transactions.values());
                 for (Transaction doubleSpendTx : doubleSpendPendingTxns) {
                     doubleSpendTx.getConfidence().setConfidenceType(ConfidenceType.IN_CONFLICT);
                     confidenceChanged.put(doubleSpendTx, TransactionConfidence.Listener.ChangeReason.TYPE);
@@ -2884,12 +2886,13 @@ public class Wallet extends BaseTaggableObject
     public Set<Transaction> getTransactions(boolean includeDead) {
         lock.lock();
         try {
-            Set<Transaction> all = new HashSet<Transaction>();
+            if (includeDead) {
+                return new HashSet<>(transactions.values());
+            }
+            Set<Transaction> all = new HashSet<>();
             all.addAll(unspent.values());
             all.addAll(spent.values());
             all.addAll(pending.values());
-            if (includeDead)
-                all.addAll(dead.values());
             return all;
         } finally {
             lock.unlock();
@@ -2991,7 +2994,7 @@ public class Wallet extends BaseTaggableObject
             if (numTransactions > size || numTransactions == 0) {
                 numTransactions = size;
             }
-            ArrayList<Transaction> all = new ArrayList<Transaction>(getTransactions(includeDead));
+            ArrayList<Transaction> all = new ArrayList<Transaction>(transactions.values());
             // Order by update time.
             Collections.sort(all, Transaction.SORT_TX_BY_UPDATE_TIME);
             if (numTransactions == all.size()) {
@@ -4440,7 +4443,7 @@ public class Wallet extends BaseTaggableObject
             // Map block hash to transactions that appear in it. We ensure that the map values are sorted according
             // to their relative position within those blocks.
             ArrayListMultimap<Sha256Hash, TxOffsetPair> mapBlockTx = ArrayListMultimap.create();
-            for (Transaction tx : getTransactions(true)) {
+            for (Transaction tx : transactions.values()) {
                 Map<Sha256Hash, Integer> appearsIn = tx.getAppearsInHashes();
                 if (appearsIn == null) continue;  // Pending.
                 for (Map.Entry<Sha256Hash, Integer> block : appearsIn.entrySet())

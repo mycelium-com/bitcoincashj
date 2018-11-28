@@ -33,7 +33,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.easymock:easymock:3.2'
-    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.8.4'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
 }
 
 test {

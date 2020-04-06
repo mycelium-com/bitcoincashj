@@ -12,11 +12,10 @@ subprojects {
   }
   
   repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    maven { url "http://repo.maven.apache.org/maven2" }
+    mavenCentral()
   }
 
   dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-api:'+slf4jVersion
   }
 }
